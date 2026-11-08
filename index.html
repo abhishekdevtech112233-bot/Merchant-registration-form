@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -618,13 +618,14 @@
             const merchantPayload = {
                 id: customId,
                 shop_name: shopNameVal,
+                owner_name: document.getElementById('ownerName').value.trim(),
                 category: catVal,
-                address: document.getElementById('address').value.trim(),
                 phone: fullPhone,
                 pin: customPinVal,
-                offer_text: '',
-                is_open_today: true,
-                profile_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e'
+                address: document.getElementById('address').value.trim(),
+                lat: document.getElementById('lat').value.trim(),
+                lng: document.getElementById('lng').value.trim(),
+                is_open_today: true
             };
 
             try {
