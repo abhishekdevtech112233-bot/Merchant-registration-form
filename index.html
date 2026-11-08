@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +26,15 @@
             align-items: center; 
             background: #11151f;
         }
-        .logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #ffffff; }
+        
+        .logo { 
+            font-size: 16px; 
+            font-weight: 800; 
+            letter-spacing: -0.5px; 
+            text-transform: uppercase; 
+            color: #ffffff; 
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(255, 255, 255, 0.2);
+        }
         .logo span { font-weight: 400; color: #8b9bb4; }
 
         .subtle-burger {
@@ -110,6 +118,7 @@
             letter-spacing: -0.5px;
             margin-bottom: 8px;
             color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 -1px 1px rgba(255, 255, 255, 0.25);
         }
         .registry-header p {
             font-size: 14px;
@@ -127,23 +136,34 @@
             letter-spacing: 0.5px;
             color: #8b9bb4;
             margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        /* 3D इनपुट बॉक्स (अंदर धंसे हुए) */
+        /* 3D इनपुट बॉक्स और अंदर टाइप होने वाले वर्ड्स का 3D Floating इफ़ेक्ट */
         input, textarea {
             width: 100%;
             padding: 16px 18px;
             background: #11151f;
             border: 1.5px solid #2563eb;
             border-radius: 14px;
-            color: #ffffff;
+            /* टेक्स्ट का कलर बैकग्राउंड टोन से मेल खाता हुआ हल्का म्यूटेड और उभरा हुआ */
+            color: #d1d5db;
             font-size: 16px;
             outline: none;
             box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04);
+            /* लेटर्स ऐसे दिखेंगे जैसे बॉक्स के अंदर 3D में तैर रहे हों */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 -1px 1px rgba(255, 255, 255, 0.1);
             transition: all 0.2s;
         }
+        
+        input::placeholder, textarea::placeholder {
+            color: #4b5563;
+            text-shadow: none;
+        }
+
         input:focus, textarea:focus {
             box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04), 0 0 15px rgba(37, 99, 235, 0.4);
+            color: #ffffff;
         }
 
         .picker-input-box {
@@ -159,8 +179,9 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8), inset -2px -2px 5px rgba(255, 255, 255, 0.03);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
-        .picker-input-box span.placeholder { color: #64748b; }
+        .picker-input-box span.placeholder { color: #4b5563; text-shadow: none; }
 
         .phone-row {
             display: grid;
@@ -186,6 +207,7 @@
             gap: 8px;
             border-radius: 12px;
             box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.7), -4px -4px 10px rgba(255, 255, 255, 0.03);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
             transition: 0.1s;
         }
         .geo-btn:active {
@@ -212,6 +234,7 @@
             gap: 10px;
             border-radius: 14px;
             box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 6px 6px 14px rgba(0, 0, 0, 0.7), inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 0 -1px 1px rgba(255, 255, 255, 0.3);
             transition: 0.1s;
         }
         .submit-btn:active {
@@ -270,7 +293,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        .overlay-top-bar h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #ffffff; }
+        .overlay-top-bar h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
         .overlay-close-btn { 
             background: #161e31; 
             border: none; 
@@ -292,11 +315,12 @@
             padding: 16px;
             background: #11151f;
             border: 1.5px solid #2563eb;
-            color: #ffffff;
+            color: #d1d5db;
             font-size: 16px;
             outline: none;
             border-radius: 14px;
             box-shadow: inset 4px 4px 8px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
         }
 
         .overlay-list-container {
@@ -313,6 +337,7 @@
             font-size: 15px;
             color: #e2e8f0;
             cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
             transition: 0.2s;
         }
         .overlay-item:hover { background: #161e31; color: #ffffff; }
@@ -324,6 +349,7 @@
             font-size: 12px;
             color: #8b9bb4;
             background: #11151f;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
         footer p { margin-bottom: 6px; }
         footer span { color: #ffffff; font-weight: 600; }
@@ -345,8 +371,7 @@
         <button class="drawer-close" onclick="toggleDrawer()">&times;</button>
         <div class="drawer-heading">Appearance Settings</div>
         <button class="theme-toggle-btn" onclick="toggleTheme()">
-            <span id="themeLabel">3D Dark Theme Active</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <span id="themeLabel">3D Floating Text Active</span>
         </button>
     </div>
 
@@ -358,52 +383,52 @@
 
         <form id="globalRegForm">
             <div class="input-group">
-                <label>दुकान का नाम (Shop Name)</label>
-                <input type="text" id="shopName" required placeholder="e.g., श्री बालाजी स्टोर #01 / Global Mart">
+                <label>दुकान का नाम / Shop Name</label>
+                <input type="text" id="shopName" required placeholder="यहाँ दुकान का नाम लिखें / Enter Shop Name">
             </div>
 
             <div class="input-group">
-                <label>संचालक (Owner Name)</label>
-                <input type="text" id="ownerName" required placeholder="Full Name / नाम">
+                <label>संचालक का नाम / Owner Name</label>
+                <input type="text" id="ownerName" required placeholder="यहाँ अपना नाम लिखें / Enter Owner Name">
             </div>
 
             <div class="input-group">
-                <label>व्यवसाय श्रेणी (Category)</label>
+                <label>व्यवसाय श्रेणी / Category</label>
                 <div class="picker-input-box" onclick="openCategoryModal()">
-                    <span id="selectedCategoryText" class="placeholder">Select or search category...</span>
+                    <span id="selectedCategoryText" class="placeholder">श्रेणी चुनें / Select Category...</span>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                 </div>
                 <input type="hidden" id="category" required>
             </div>
 
             <div class="input-group">
-                <label>दुकान का विवरण / शर्तें (Description)</label>
-                <textarea id="description" rows="3" required placeholder="अपनी दुकान और ऑफर्स/शर्तों के बारे में विस्तार से लिखें..."></textarea>
+                <label>विवरण और शर्तें / Description & Offers</label>
+                <textarea id="description" rows="3" required placeholder="यहाँ अपनी दुकान का विवरण लिखें / Enter Store Description..."></textarea>
             </div>
 
             <div class="input-group">
-                <label>सुरक्षित पासवर्ड / पिन (PIN - 4 Digits)</label>
+                <label>सुरक्षित पिन / PIN (4 Digits)</label>
                 <input type="password" id="customPin" required maxlength="4" placeholder="••••">
             </div>
 
             <div class="input-group">
-                <label>मोबाइल नंबर (Phone Number & Country Code)</label>
+                <label>मोबाइल नंबर / Phone Number</label>
                 <div class="phone-row">
                     <div class="picker-input-box" onclick="openCountryModal()">
                         <span id="selectedCountryCode">+91 (IN)</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     </div>
-                    <input type="tel" id="phone" required placeholder="1234567890">
+                    <input type="tel" id="phone" required placeholder="मोबाइल नंबर डालें / Enter Phone">
                 </div>
             </div>
 
             <div class="input-group">
-                <label>पूर्ण पता (Full Address & Country)</label>
-                <textarea id="address" rows="2" required placeholder="Street, City, State, Country, Postal Code"></textarea>
+                <label>पूर्ण पता / Full Address</label>
+                <textarea id="address" rows="2" required placeholder="यहाँ पूरा पता लिखें / Enter Full Address"></textarea>
             </div>
 
             <div class="input-group">
-                <label>GPS कोऑर्डिनेट्स (GPS Coordinates)</label>
+                <label>GPS कोऑर्डिनेट्स / GPS Coordinates</label>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <input type="text" id="lat" placeholder="Latitude">
                     <input type="text" id="lng" placeholder="Longitude">
@@ -459,7 +484,7 @@
             <button class="overlay-close-btn" onclick="closeCountryModal()">&times;</button>
         </div>
         <div class="overlay-search-container">
-            <input type="text" id="countrySearchInput" class="overlay-search-input" placeholder="Search country or code (e.g., +1, United States)..." oninput="filterCountries()">
+            <input type="text" id="countrySearchInput" class="overlay-search-input" placeholder="Search country or code..." oninput="filterCountries()">
         </div>
         <div class="overlay-list-container" id="countryListContainer">
             <div class="overlay-item" onclick="selectCountry('+91', 'IN')">+91 — India (भारत)</div>
@@ -487,7 +512,7 @@
 
     <footer>
         <p><span>Star Shop & Star Merchant Ecosystem</span> — Global Hyperlocal Commercial Network</p>
-        <p>Official Support: <a href="mailto:support@starshop.ecosystem" style="color: #8b9bb4; text-decoration: underline;">support@starshop.ecosystem</a></p>
+        <p>Official Support: <a href="mailto:support@starshop.ecosystem" style="color: #8b9bb4; text-decoration: underline;">support@support.ecosystem</a></p>
         <p style="margin-top: 10px; font-size: 11px;">© 2026 All Rights Reserved. Secured via Supabase Backend Infrastructure.</p>
     </footer>
 
@@ -504,8 +529,7 @@
         }
 
         function toggleTheme() {
-            // 3D डार्क थीम हमेशा लॉक रहेगी
-            alert('3D Futuristic Dark Theme is permanently active for Star Merchant Ecosystem!');
+            alert('3D Floating Text Dark Theme is permanently active!');
         }
 
         function openCategoryModal() {
@@ -661,7 +685,7 @@
 
                 statusBox.className = 'status-box success';
                 statusBox.innerHTML = `
-                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px; color: #ffffff;">✨ Thank You for Registration! ✨</h2>
+                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ Thank You for Registration! ✨</h2>
                     <p style="margin-bottom: 15px; color: #8b9bb4;">Your store has been successfully registered and saved to Supabase!</p>
                     <div style="text-align: left; background: #0b0e14; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px;">
                         <b>Generated UUID:</b> <code style="color:#34d399;">${generatedUuid}</code><br>
@@ -672,7 +696,7 @@
                 
                 document.getElementById('globalRegForm').reset();
                 document.getElementById('selectedCategoryText').textContent = 'Select or search category...';
-                document.getElementById('selectedCategoryText').style.color = '#64748b';
+                document.getElementById('selectedCategoryText').style.color = '#4b5563';
             } catch (err) {
                 statusBox.className = 'status-box error';
                 statusBox.textContent = 'Database Error: ' + err.message;
