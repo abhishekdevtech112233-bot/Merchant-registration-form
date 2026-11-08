@@ -7,54 +7,45 @@
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-main: #0a0a0a;
-            --text-muted: #71717a;
-            --border-color: #e4e4e7;
-            --card-bg: #f4f4f5;
-            --input-bg: transparent;
-        }
-
-        body.dark-theme {
-            --bg-color: #09090b;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --border-color: #27272a;
-            --card-bg: #121215;
-            --input-bg: transparent;
-        }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.3s, color 0.3s; }
+        
+        body { 
+            background-color: #0b0e14; 
+            color: #ffffff; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+        }
 
         header { 
             padding: 20px 30px; 
-            border-bottom: 1px solid var(--border-color); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
+            background: #11151f;
         }
-        .logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; }
-        .logo span { font-weight: 400; color: var(--text-muted); }
+        .logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #ffffff; }
+        .logo span { font-weight: 400; color: #8b9bb4; }
 
         .subtle-burger {
-            background: none;
+            background: #161e31;
             border: none;
             cursor: pointer;
-            padding: 6px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 4px;
-            opacity: 0.6;
-            transition: opacity 0.2s;
+            border-radius: 50%;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6), -2px -2px 5px rgba(255, 255, 255, 0.03);
+            transition: 0.2s;
         }
-        .subtle-burger:hover { opacity: 1; }
         .subtle-burger span {
             display: block;
-            width: 18px;
-            height: 1.5px;
-            background-color: var(--text-main);
+            width: 16px;
+            height: 2px;
+            background-color: #ffffff;
         }
 
         .drawer { 
@@ -63,43 +54,42 @@
             right: -350px; 
             width: 320px; 
             height: 100%; 
-            background: var(--bg-color); 
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
+            background: #11151f; 
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8); 
             z-index: 1000; 
             transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
             padding: 40px; 
-            border-left: 1px solid var(--border-color); 
+            border-left: 1px solid rgba(255, 255, 255, 0.05); 
         }
         .drawer.open { right: 0; }
-        .drawer-close { background: none; border: none; color: var(--text-main); font-size: 22px; cursor: pointer; float: right; margin-bottom: 30px; }
+        .drawer-close { background: none; border: none; color: #ffffff; font-size: 24px; cursor: pointer; float: right; margin-bottom: 30px; }
         
         .drawer-heading {
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--text-muted);
+            color: #8b9bb4;
             margin-bottom: 15px;
             font-weight: 700;
         }
         .theme-toggle-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 16px;
-            font-size: 12px;
+            background: linear-gradient(145deg, #161b27, #121621);
+            border: none;
+            color: #ffffff;
+            padding: 14px 16px;
+            font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
             width: 100%;
-            text-align: left;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: 0.2s;
+            border-radius: 12px;
+            box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.7), -3px -3px 8px rgba(255, 255, 255, 0.03);
         }
-        .theme-toggle-btn:hover { background: var(--card-bg); }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 999; display: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; display: none; }
         .overlay.active { display: block; }
 
         .main-container { 
@@ -111,18 +101,19 @@
 
         .registry-header {
             margin-bottom: 35px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             padding-bottom: 20px;
         }
         .registry-header h1 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            color: #ffffff;
         }
         .registry-header p {
-            font-size: 13.5px;
-            color: var(--text-muted);
+            font-size: 14px;
+            color: #8b9bb4;
         }
 
         .input-group {
@@ -130,123 +121,138 @@
         }
         label {
             display: block;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
+            color: #8b9bb4;
+            margin-bottom: 10px;
         }
+
+        /* 3D इनपुट बॉक्स (अंदर धंसे हुए) */
         input, textarea {
             width: 100%;
-            padding: 12px 14px;
-            background: var(--input-bg);
-            border: none;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 14px;
+            padding: 16px 18px;
+            background: #11151f;
+            border: 1.5px solid #2563eb;
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 16px;
             outline: none;
-            border-radius: 0px;
-            transition: border-color 0.2s;
+            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04);
+            transition: all 0.2s;
         }
         input:focus, textarea:focus {
-            border-bottom-color: var(--text-main);
-            background: rgba(128, 128, 128, 0.05);
+            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04), 0 0 15px rgba(37, 99, 235, 0.4);
         }
 
         .picker-input-box {
             width: 100%;
-            padding: 12px 14px;
-            background: var(--input-bg);
-            border: none;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 14px;
+            padding: 16px 18px;
+            background: #11151f;
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8), inset -2px -2px 5px rgba(255, 255, 255, 0.03);
         }
-        .picker-input-box span.placeholder { color: var(--text-muted); }
+        .picker-input-box span.placeholder { color: #64748b; }
 
         .phone-row {
             display: grid;
-            grid-template-columns: 120px 1fr;
+            grid-template-columns: 140px 1fr;
             gap: 15px;
         }
 
+        /* 3D उभरा हुआ जियो बटन */
         .geo-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px;
-            font-size: 11.5px;
+            background: linear-gradient(145deg, #141924, #0e121a);
+            border: none;
+            color: #8b9bb4;
+            padding: 14px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
             width: 100%;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-        .geo-btn:hover { opacity: 0.7; }
-
-        .submit-btn {
-            width: 100%;
-            background: var(--text-main);
-            color: var(--bg-color);
-            border: none;
-            padding: 15px;
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 15px;
+            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: opacity 0.2s;
+            border-radius: 12px;
+            box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.7), -4px -4px 10px rgba(255, 255, 255, 0.03);
+            transition: 0.1s;
         }
-        .submit-btn:hover { opacity: 0.85; }
+        .geo-btn:active {
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8), inset -3px -3px 6px rgba(255, 255, 255, 0.03);
+            transform: translateY(1px);
+        }
+
+        /* 3D सबमिट बटन */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(145deg, #2b6ef6, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 14px;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 6px 6px 14px rgba(0, 0, 0, 0.7), inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
+            transition: 0.1s;
+        }
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.6), 0 0 15px rgba(37, 99, 235, 0.4);
+        }
 
         .status-box {
             margin-top: 25px;
             padding: 25px;
             font-size: 14px;
             display: none;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
+            border-radius: 16px;
+            background: #11151f;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8);
             text-align: center;
         }
-        .status-box.success { border-color: #059669; display: block; }
-        .status-box.error { border-color: #dc2626; color: #fca5a5; display: block; text-align: left; }
+        .status-box.success { border: 1px solid #059669; display: block; }
+        .status-box.error { border: 1px solid #dc2626; color: #fca5a5; display: block; text-align: left; }
 
         .whatsapp-share-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             margin-top: 15px;
             background: #25d366;
             color: #000;
-            padding: 12px 20px;
+            padding: 14px 22px;
             font-weight: 800;
             text-decoration: none;
             text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
+            font-size: 13px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
         }
-        .whatsapp-share-btn:hover { background: #20ba5a; }
 
         .fullscreen-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: var(--bg-color);
+            background: #0b0e14;
             z-index: 2000;
             display: none;
             flex-direction: column;
@@ -264,8 +270,17 @@
             margin-left: auto;
             margin-right: auto;
         }
-        .overlay-top-bar h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; }
-        .overlay-close-btn { background: none; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; }
+        .overlay-top-bar h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #ffffff; }
+        .overlay-close-btn { 
+            background: #161e31; 
+            border: none; 
+            color: #ffffff; 
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            font-size: 20px; 
+            cursor: pointer; 
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.6);
+        }
 
         .overlay-search-container {
             max-width: 600px;
@@ -274,15 +289,15 @@
         }
         .overlay-search-input {
             width: 100%;
-            padding: 14px 16px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 15px;
+            padding: 16px;
+            background: #11151f;
+            border: 1.5px solid #2563eb;
+            color: #ffffff;
+            font-size: 16px;
             outline: none;
-            border-radius: 0px;
+            border-radius: 14px;
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.8);
         }
-        .overlay-search-input:focus { border-color: var(--text-main); }
 
         .overlay-list-container {
             max-width: 600px;
@@ -290,28 +305,28 @@
             margin: 0 auto;
             flex: 1;
             overflow-y: auto;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
         .overlay-item {
-            padding: 16px 14px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14.5px;
-            color: var(--text-main);
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 15px;
+            color: #e2e8f0;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.2s;
         }
-        .overlay-item:hover { background: var(--card-bg); }
+        .overlay-item:hover { background: #161e31; color: #ffffff; }
 
         footer {
             padding: 30px;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             font-size: 12px;
-            color: var(--text-muted);
-            background: var(--bg-color);
+            color: #8b9bb4;
+            background: #11151f;
         }
         footer p { margin-bottom: 6px; }
-        footer span { color: var(--text-main); font-weight: 600; }
+        footer span { color: #ffffff; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -330,7 +345,7 @@
         <button class="drawer-close" onclick="toggleDrawer()">&times;</button>
         <div class="drawer-heading">Appearance Settings</div>
         <button class="theme-toggle-btn" onclick="toggleTheme()">
-            <span id="themeLabel">Dark / Light Mode</span>
+            <span id="themeLabel">3D Dark Theme Active</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </button>
     </div>
@@ -374,7 +389,7 @@
             <div class="input-group">
                 <label>मोबाइल नंबर (Phone Number & Country Code)</label>
                 <div class="phone-row">
-                    <div class="picker-input-box" onclick="openCountryModal()" style="border-bottom: 1px solid var(--border-color);">
+                    <div class="picker-input-box" onclick="openCountryModal()">
                         <span id="selectedCountryCode">+91 (IN)</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     </div>
@@ -472,7 +487,7 @@
 
     <footer>
         <p><span>Star Shop & Star Merchant Ecosystem</span> — Global Hyperlocal Commercial Network</p>
-        <p>Official Support: <a href="mailto:support@starshop.ecosystem" style="color: var(--text-muted); text-decoration: underline;">support@starshop.ecosystem</a></p>
+        <p>Official Support: <a href="mailto:support@starshop.ecosystem" style="color: #8b9bb4; text-decoration: underline;">support@starshop.ecosystem</a></p>
         <p style="margin-top: 10px; font-size: 11px;">© 2026 All Rights Reserved. Secured via Supabase Backend Infrastructure.</p>
     </footer>
 
@@ -489,9 +504,8 @@
         }
 
         function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const isDark = document.body.classList.contains('dark-theme');
-            document.getElementById('themeLabel').textContent = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+            // 3D डार्क थीम हमेशा लॉक रहेगी
+            alert('3D Futuristic Dark Theme is permanently active for Star Merchant Ecosystem!');
         }
 
         function openCategoryModal() {
@@ -505,7 +519,7 @@
             document.getElementById('category').value = catName;
             const textSpan = document.getElementById('selectedCategoryText');
             textSpan.textContent = catName;
-            textSpan.style.color = 'var(--text-main)';
+            textSpan.style.color = '#ffffff';
             closeCategoryModal();
         }
         function filterCategories() {
@@ -609,7 +623,6 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Processing Registration...';
 
-            // डेटाबेस के uuid कॉलम की मांग पूरी करने के लिए ऑटो-जेनरेटेड UUID
             const generatedUuid = crypto.randomUUID();
             const rawPhone = document.getElementById('phone').value.trim();
             const fullPhone = activeCountryCode.replace('+', '') + rawPhone;
@@ -626,7 +639,7 @@
                 shop_name: shopNameVal,
                 owner_name: ownerNameVal,
                 category: catVal,
-                offer_text: descriptionVal, // विवरण को offer_text/description कॉलम में फिट किया गया है
+                offer_text: descriptionVal,
                 phone: fullPhone,
                 pin: customPinVal,
                 address: addressVal,
@@ -648,10 +661,10 @@
 
                 statusBox.className = 'status-box success';
                 statusBox.innerHTML = `
-                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px;">✨ Thank You for Registration! ✨</h2>
-                    <p style="margin-bottom: 15px; color: var(--text-muted);">Your store has been successfully registered and saved to Supabase!</p>
-                    <div style="text-align: left; background: var(--bg-color); padding: 15px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                        <b>Generated UUID:</b> <code style="color:#059669;">${generatedUuid}</code><br>
+                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px; color: #ffffff;">✨ Thank You for Registration! ✨</h2>
+                    <p style="margin-bottom: 15px; color: #8b9bb4;">Your store has been successfully registered and saved to Supabase!</p>
+                    <div style="text-align: left; background: #0b0e14; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px;">
+                        <b>Generated UUID:</b> <code style="color:#34d399;">${generatedUuid}</code><br>
                         <b>Shop Name:</b> <code>${shopNameVal}</code>
                     </div>
                     <a href="${waLink}" target="_blank" class="whatsapp-share-btn">💬 Send Confirmation via WhatsApp</a>
@@ -659,7 +672,7 @@
                 
                 document.getElementById('globalRegForm').reset();
                 document.getElementById('selectedCategoryText').textContent = 'Select or search category...';
-                document.getElementById('selectedCategoryText').style.color = 'var(--text-muted)';
+                document.getElementById('selectedCategoryText').style.color = '#64748b';
             } catch (err) {
                 statusBox.className = 'status-box error';
                 statusBox.textContent = 'Database Error: ' + err.message;
