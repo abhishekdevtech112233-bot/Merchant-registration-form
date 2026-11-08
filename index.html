@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -343,7 +343,7 @@
 
         <form id="globalRegForm">
             <div class="input-group">
-                <label>दुकान का नाम (Shop Name - हिंदी, इंग्लिश या स्पेशल कैरेक्टर)</label>
+                <label>दुकान का नाम (Shop Name)</label>
                 <input type="text" id="shopName" required placeholder="e.g., श्री बालाजी स्टोर #01 / Global Mart">
             </div>
 
@@ -362,12 +362,17 @@
             </div>
 
             <div class="input-group">
+                <label>दुकान का विवरण / शर्तें (Description & Offer Conditions)</label>
+                <textarea id="description" rows="3" required placeholder="अपनी दुकान और ऑफर्स/शर्तों के बारे में विस्तार से लिखें..."></textarea>
+            </div>
+
+            <div class="input-group">
                 <label>कस्टम मर्चेंट आईडी (Custom Merchant ID)</label>
                 <input type="text" id="customMerchantId" required placeholder="अपनी मर्जी से आईडी बनाएं (जो मर्जी सिंबल/नाम)">
             </div>
 
             <div class="input-group">
-                <label>सुरक्षित पासवर्ड / पिन (Custom Password / PIN - अनंत लंबाई)</label>
+                <label>सुरक्षित पासवर्ड / पिन (Custom Password / PIN)</label>
                 <input type="text" id="customPin" required placeholder="कितने भी अंकों या अक्षरों का पासवर्ड दर्ज करें">
             </div>
 
@@ -477,9 +482,9 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://fzerbvhdaqifaeabdjkj.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_ajo-GdO4PcqhQDTcde9m7w_Ib6kzaVM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = "https://fzerbvhdaqifaeabdjkj.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_ajo-GdO4PcqhQDTcde9m7w_Ib6kzaVM";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let activeCountryCode = '+91';
 
@@ -614,12 +619,14 @@
             const rawPhone = document.getElementById('phone').value.trim();
             const fullPhone = activeCountryCode.replace('+', '') + rawPhone;
             const shopNameVal = document.getElementById('shopName').value.trim();
+            const descriptionVal = document.getElementById('description').value.trim();
 
             const merchantPayload = {
                 id: customId,
                 shop_name: shopNameVal,
                 owner_name: document.getElementById('ownerName').value.trim(),
                 category: catVal,
+                description: descriptionVal,
                 phone: fullPhone,
                 pin: customPinVal,
                 address: document.getElementById('address').value.trim(),
@@ -629,7 +636,7 @@
             };
 
             try {
-                const { error } = await _supabase
+                const { error } = await supabaseClient
                     .from('merchants')
                     .insert([merchantPayload]);
 
