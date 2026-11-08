@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Shop - Global Merchant Registry</title>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #0a0a0a;
+            --text-muted: #71717a;
+            --border-color: #e4e4e7;
+            --card-bg: #f4f4f5;
+            --input-bg: transparent;
+        }
+
+        body.dark-theme {
+            --bg-color: #09090b;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: #27272a;
+            --card-bg: #121215;
+            --input-bg: transparent;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.3s, color 0.3s; }
+
+        header { 
+            padding: 20px 30px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; }
+        .logo span { font-weight: 400; color: var(--text-muted); }
+
+        .subtle-burger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .subtle-burger:hover { opacity: 1; }
+        .subtle-burger span {
+            display: block;
+            width: 18px;
+            height: 1.5px;
+            background-color: var(--text-main);
+        }
+
+        .drawer { 
+            position: fixed; 
+            top: 0; 
+            right: -350px; 
+            width: 320px; 
+            height: 100%; 
+            background: var(--bg-color); 
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
+            z-index: 1000; 
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            padding: 40px; 
+            border-left: 1px solid var(--border-color); 
+        }
+        .drawer.open { right: 0; }
+        .drawer-close { background: none; border: none; color: var(--text-main); font-size: 22px; cursor: pointer; float: right; margin-bottom: 30px; }
+        
+        .drawer-heading {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .theme-toggle-btn:hover { background: var(--card-bg); }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+
+        .main-container { 
+            max-width: 540px; 
+            width: 100%; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+        }
+
+        .registry-header {
+            margin-bottom: 35px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .registry-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        .registry-header p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--input-bg);
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            border-radius: 0px;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus {
+            border-bottom-color: var(--text-main);
+            background: rgba(128, 128, 128, 0.05);
+        }
+
+        .picker-input-box {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--input-bg);
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .picker-input-box span.placeholder { color: var(--text-muted); }
+
+        .phone-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 15px;
+        }
+
+        .geo-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .geo-btn:hover { opacity: 0.7; }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--text-main);
+            color: var(--bg-color);
+            border: none;
+            padding: 15px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+        .submit-btn:hover { opacity: 0.85; }
+
+        .status-box {
+            margin-top: 25px;
+            padding: 25px;
+            font-size: 14px;
+            display: none;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            text-align: center;
+        }
+        .status-box.success { border-color: #059669; display: block; }
+        .status-box.error { border-color: #dc2626; color: #fca5a5; display: block; text-align: left; }
+
+        .whatsapp-share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 15px;
+            background: #25d366;
+            color: #000;
+            padding: 12px 20px;
+            font-weight: 800;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        .whatsapp-share-btn:hover { background: #20ba5a; }
+
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: var(--bg-color);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 30px 20px;
+        }
+        .fullscreen-overlay.active { display: flex; }
+
+        .overlay-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            max-width: 600px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .overlay-top-bar h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; }
+        .overlay-close-btn { background: none; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; }
+
+        .overlay-search-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto 20px auto;
+        }
+        .overlay-search-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 15px;
+            outline: none;
+            border-radius: 0px;
+        }
+        .overlay-search-input:focus { border-color: var(--text-main); }
+
+        .overlay-list-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+            overflow-y: auto;
+            border-top: 1px solid var(--border-color);
+        }
+        .overlay-item {
+            padding: 16px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14.5px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .overlay-item:hover { background: var(--card-bg); }
+
+        footer {
+            padding: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-color);
+        }
+        footer p { margin-bottom: 6px; }
+        footer span { color: var(--text-main); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Star Shop <span>Global Merchant Portal</span></div>
+        <button class="subtle-burger" onclick="toggleDrawer()" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+    <div class="drawer" id="drawer">
+        <button class="drawer-close" onclick="toggleDrawer()">&times;</button>
+        <div class="drawer-heading">Appearance Settings</div>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+            <span id="themeLabel">Dark / Light Mode</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+    </div>
+
+    <div class="main-container">
+        <div class="registry-header">
+            <h1>Global Merchant Registry</h1>
+            <p>Enter your store details to connect directly with the worldwide hyperlocal network.</p>
+        </div>
+
+        <form id="globalRegForm">
+            <div class="input-group">
+                <label>दुकान का नाम (Shop Name - हिंदी, इंग्लिश या स्पेशल कैरेक्टर)</label>
+                <input type="text" id="shopName" required placeholder="e.g., श्री बालाजी स्टोर #01 / Global Mart">
+            </div>
+
+            <div class="input-group">
+                <label>संचालक (Owner Name)</label>
+                <input type="text" id="ownerName" required placeholder="Full Name / नाम">
+            </div>
+
+            <div class="input-group">
+                <label>व्यवसाय श्रेणी (Category)</label>
+                <div class="picker-input-box" onclick="openCategoryModal()">
+                    <span id="selectedCategoryText" class="placeholder">Select or search category...</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </div>
+                <input type="hidden" id="category" required>
+            </div>
+
+            <div class="input-group">
+                <label>कस्टम मर्चेंट आईडी (Custom Merchant ID)</label>
+                <input type="text" id="customMerchantId" required placeholder="अपनी मर्जी से आईडी बनाएं (जो मर्जी सिंबल/नाम)">
+            </div>
+
+            <div class="input-group">
+                <label>सुरक्षित पासवर्ड / पिन (Custom Password / PIN - अनंत लंबाई)</label>
+                <input type="text" id="customPin" required placeholder="कितने भी अंकों या अक्षरों का पासवर्ड दर्ज करें">
+            </div>
+
+            <div class="input-group">
+                <label>मोबाइल नंबर (Phone Number & Country Code)</label>
+                <div class="phone-row">
+                    <div class="picker-input-box" onclick="openCountryModal()" style="border-bottom: 1px solid var(--border-color);">
+                        <span id="selectedCountryCode">+91 (IN)</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    </div>
+                    <input type="tel" id="phone" required placeholder="1234567890">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>पूर्ण पता (Full Address & Country)</label>
+                <textarea id="address" rows="2" required placeholder="Street, City, State, Country, Postal Code"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>GPS कोऑर्डिनेट्स (GPS Coordinates)</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <input type="text" id="lat" placeholder="Latitude">
+                    <input type="text" id="lng" placeholder="Longitude">
+                </div>
+                <button type="button" class="geo-btn" onclick="getLocation()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Fetch GPS Location
+                </button>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Register Store
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            
+            <div id="statusBox" class="status-box"></div>
+        </form>
+    </div>
+
+    <!-- Category Search Overlay -->
+    <div class="fullscreen-overlay" id="categoryOverlay">
+        <div class="overlay-top-bar">
+            <h2>Select Category</h2>
+            <button class="overlay-close-btn" onclick="closeCategoryModal()">&times;</button>
+        </div>
+        <div class="overlay-search-container">
+            <input type="text" id="catSearchInput" class="overlay-search-input" placeholder="Search or type custom category..." oninput="filterCategories()">
+        </div>
+        <div class="overlay-list-container" id="catListContainer">
+            <div class="overlay-item" onclick="selectCategory('Grocery & Daily Needs')">Grocery & Daily Needs</div>
+            <div class="overlay-item" onclick="selectCategory('Beauty & Salon')">Beauty & Salon</div>
+            <div class="overlay-item" onclick="selectCategory('General Store')">General Store</div>
+            <div class="overlay-item" onclick="selectCategory('Electronics & Mobile')">Electronics & Mobile</div>
+            <div class="overlay-item" onclick="selectCategory('Food & Restaurant')">Food & Restaurant</div>
+            <div class="overlay-item" onclick="selectCategory('Clothing & Apparel')">Clothing & Apparel</div>
+            <div class="overlay-item" onclick="selectCategory('Medical & Pharmacy')">Medical & Pharmacy</div>
+            <div class="overlay-item" onclick="selectCategory('Hardware & Tools')">Hardware & Tools</div>
+            <div class="overlay-item" onclick="selectCategory('Stationery & Books')">Stationery & Books</div>
+            <div class="overlay-item" onclick="selectCategory('Footwear')">Footwear</div>
+            <div class="overlay-item" onclick="selectCategory('Automotive & Spares')">Automotive & Spares</div>
+            <div class="overlay-item" onclick="selectCategory('Fresh Produce & Fruits')">Fresh Produce & Fruits</div>
+            <div class="overlay-item" onclick="selectCategory('Dairy & Milk')">Dairy & Milk</div>
+            <div class="overlay-item" onclick="selectCategory('Fitness & Gym')">Fitness & Gym</div>
+            <div class="overlay-item" onclick="selectCategory('Home Decor')">Home Decor</div>
+            <div class="overlay-item" onclick="selectCategory('Jewellery & Watches')">Jewellery & Watches</div>
+        </div>
+    </div>
+
+    <!-- Country Code Search Overlay -->
+    <div class="fullscreen-overlay" id="countryOverlay">
+        <div class="overlay-top-bar">
+            <h2>Select Country Code</h2>
+            <button class="overlay-close-btn" onclick="closeCountryModal()">&times;</button>
+        </div>
+        <div class="overlay-search-container">
+            <input type="text" id="countrySearchInput" class="overlay-search-input" placeholder="Search country or code (e.g., +1, United States)..." oninput="filterCountries()">
+        </div>
+        <div class="overlay-list-container" id="countryListContainer">
+            <div class="overlay-item" onclick="selectCountry('+91', 'IN')">+91 — India (भारत)</div>
+            <div class="overlay-item" onclick="selectCountry('+1', 'US/CA')">+1 — United States / Canada</div>
+            <div class="overlay-item" onclick="selectCountry('+44', 'GB')">+44 — United Kingdom</div>
+            <div class="overlay-item" onclick="selectCountry('+61', 'AU')">+61 — Australia</div>
+            <div class="overlay-item" onclick="selectCountry('+971', 'AE')">+971 — United Arab Emirates</div>
+            <div class="overlay-item" onclick="selectCountry('+966', 'SA')">+966 — Saudi Arabia</div>
+            <div class="overlay-item" onclick="selectCountry('+49', 'DE')">+49 — Germany</div>
+            <div class="overlay-item" onclick="selectCountry('+33', 'FR')">+33 — France</div>
+            <div class="overlay-item" onclick="selectCountry('+81', 'JP')">+81 — Japan</div>
+            <div class="overlay-item" onclick="selectCountry('+86', 'CN')">+86 — China</div>
+            <div class="overlay-item" onclick="selectCountry('+65', 'SG')">+65 — Singapore</div>
+            <div class="overlay-item" onclick="selectCountry('+60', 'MY')">+60 — Malaysia</div>
+            <div class="overlay-item" onclick="selectCountry('+92', 'PK')">+92 — Pakistan</div>
+            <div class="overlay-item" onclick="selectCountry('+880', 'BD')">+880 — Bangladesh</div>
+            <div class="overlay-item" onclick="selectCountry('+94', 'LK')">+94 — Sri Lanka</div>
+            <div class="overlay-item" onclick="selectCountry('+977', 'NP')">+977 — Nepal</div>
+            <div class="overlay-item" onclick="selectCountry('+39', 'IT')">+39 — Italy</div>
+            <div class="overlay-item" onclick="selectCountry('+34', 'ES')">+34 — Spain</div>
+            <div class="overlay-item" onclick="selectCountry('+55', 'BR')">+55 — Brazil</div>
+            <div class="overlay-item" onclick="selectCountry('+7', 'RU')">+7 — Russia</div>
+        </div>
+    </div>
+
+    <footer>
+        <p><span>Star Shop & Star Merchant Ecosystem</span> — Global Hyperlocal Commercial Network</p>
+        <p>Official Support: <a href="mailto:support@starshop.ecosystem" style="color: var(--text-muted); text-decoration: underline;">support@starshop.ecosystem</a></p>
+        <p style="margin-top: 10px; font-size: 11px;">© 2026 All Rights Reserved. Secured via Supabase Backend Infrastructure.</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://fzerbvhdaqifaeabdjkj.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ajo-GdO4PcqhQDTcde9m7w_Ib6kzaVM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let activeCountryCode = '+91';
+
+        function toggleDrawer() {
+            document.getElementById('drawer').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            document.getElementById('themeLabel').textContent = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+
+        function openCategoryModal() {
+            document.getElementById('categoryOverlay').classList.add('active');
+            document.getElementById('catSearchInput').focus();
+        }
+        function closeCategoryModal() {
+            document.getElementById('categoryOverlay').classList.remove('active');
+        }
+        function selectCategory(catName) {
+            document.getElementById('category').value = catName;
+            const textSpan = document.getElementById('selectedCategoryText');
+            textSpan.textContent = catName;
+            textSpan.style.color = 'var(--text-main)';
+            closeCategoryModal();
+        }
+        function filterCategories() {
+            const query = document.getElementById('catSearchInput').value.toLowerCase().trim();
+            const container = document.getElementById('catListContainer');
+            
+            if (query.length > 0) {
+                let customOpt = document.getElementById('customCatOption');
+                if (!customOpt) {
+                    customOpt = document.createElement('div');
+                    customOpt.id = 'customCatOption';
+                    customOpt.className = 'overlay-item';
+                    customOpt.style.color = '#38bdf8';
+                    customOpt.onclick = function() { selectCategory(query); };
+                    container.insertBefore(customOpt, container.firstChild);
+                }
+                customOpt.textContent = `➕ Add Custom Category: "${query}"`;
+            } else {
+                const customOpt = document.getElementById('customCatOption');
+                if (customOpt) customOpt.remove();
+            }
+
+            const items = container.getElementsByClassName('overlay-item');
+            for (let item of items) {
+                if (item.id === 'customCatOption') continue;
+                item.style.display = item.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            }
+        }
+
+        function openCountryModal() {
+            document.getElementById('countryOverlay').classList.add('active');
+            document.getElementById('countrySearchInput').focus();
+        }
+        function closeCountryModal() {
+            document.getElementById('countryOverlay').classList.remove('active');
+        }
+        function selectCountry(code, country) {
+            activeCountryCode = code;
+            document.getElementById('selectedCountryCode').textContent = `${code} (${country})`;
+            closeCountryModal();
+        }
+        function filterCountries() {
+            const query = document.getElementById('countrySearchInput').value.toLowerCase().trim();
+            const container = document.getElementById('countryListContainer');
+            
+            if (query.length > 0 && query.startsWith('+')) {
+                let customCountryOpt = document.getElementById('customCountryOpt');
+                if (!customCountryOpt) {
+                    customCountryOpt = document.createElement('div');
+                    customCountryOpt.id = 'customCountryOpt';
+                    customCountryOpt.className = 'overlay-item';
+                    customCountryOpt.style.color = '#38bdf8';
+                    customCountryOpt.onclick = function() { selectCountry(query, 'Custom'); };
+                    container.insertBefore(customCountryOpt, container.firstChild);
+                }
+                customCountryOpt.textContent = `➕ Use Custom Code: "${query}"`;
+            } else {
+                const customCountryOpt = document.getElementById('customCountryOpt');
+                if (customCountryOpt) customCountryOpt.remove();
+            }
+
+            const items = container.getElementsByClassName('overlay-item');
+            for (let item of items) {
+                if (item.id === 'customCountryOpt') continue;
+                item.style.display = item.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            }
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        document.getElementById('lat').value = position.coords.latitude;
+                        document.getElementById('lng').value = position.coords.longitude;
+                        alert('GPS location fetched successfully!');
+                    },
+                    (error) => {
+                        alert('Unable to retrieve location: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        document.getElementById('globalRegForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const catVal = document.getElementById('category').value;
+            if (!catVal) {
+                alert('Please select or type your business category!');
+                openCategoryModal();
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const statusBox = document.getElementById('statusBox');
+            
+            statusBox.className = 'status-box';
+            statusBox.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing Registration...';
+
+            const customId = document.getElementById('customMerchantId').value.trim();
+            const customPinVal = document.getElementById('customPin').value.trim();
+            const rawPhone = document.getElementById('phone').value.trim();
+            const fullPhone = activeCountryCode.replace('+', '') + rawPhone;
+            const shopNameVal = document.getElementById('shopName').value.trim();
+
+            const merchantPayload = {
+                id: customId,
+                shop_name: shopNameVal,
+                category: catVal,
+                address: document.getElementById('address').value.trim(),
+                phone: fullPhone,
+                pin: customPinVal,
+                offer_text: '',
+                is_open_today: true,
+                profile_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e'
+            };
+
+            try {
+                const { error } = await _supabase
+                    .from('merchants')
+                    .insert([merchantPayload]);
+
+                if (error) throw error;
+
+                const waMessage = encodeURIComponent(`⭐ *Star Merchant Global Registration* ⭐\n\nHello ${shopNameVal},\nThank you for registering! Your store is now live.\n\n🔑 *Login Credentials:*-\n• Custom Merchant ID: ${customId}\n• Secure Password/PIN: ${customPinVal}\n\nYou can now log in to your dashboard securely.`);
+                const waLink = `https://wa.me/${fullPhone}?text=${waMessage}`;
+
+                statusBox.className = 'status-box success';
+                statusBox.innerHTML = `
+                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px;">✨ Thank You for Registration! ✨</h2>
+                    <p style="margin-bottom: 15px; color: var(--text-muted);">Your store has been successfully registered and is now live on the global network.</p>
+                    <div style="text-align: left; background: var(--bg-color); padding: 15px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                        <b>Merchant ID:</b> <code style="color:#059669;">${customId}</code><br>
+                        <b>Secure Password:</b> <code>${customPinVal}</code>
+                    </div>
+                    <a href="${waLink}" target="_blank" class="whatsapp-share-btn">💬 Send Credentials via WhatsApp</a>
+                `;
+                
+                document.getElementById('globalRegForm').reset();
+                document.getElementById('selectedCategoryText').textContent = 'Select or search category...';
+                document.getElementById('selectedCategoryText').style.color = 'var(--text-muted)';
+            } catch (err) {
+                statusBox.className = 'status-box error';
+                statusBox.textContent = 'Database Error (ID may already exist): ' + err.message;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register Store 🚀';
+            }
+        });
+    </script>
+</body>
+</html>
