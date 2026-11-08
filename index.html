@@ -362,18 +362,13 @@
             </div>
 
             <div class="input-group">
-                <label>दुकान का विवरण / शर्तें (Description & Offer Conditions)</label>
+                <label>दुकान का विवरण / शर्तें (Description)</label>
                 <textarea id="description" rows="3" required placeholder="अपनी दुकान और ऑफर्स/शर्तों के बारे में विस्तार से लिखें..."></textarea>
             </div>
 
             <div class="input-group">
-                <label>कस्टम मर्चेंट आईडी (Custom Merchant ID)</label>
-                <input type="text" id="customMerchantId" required placeholder="अपनी मर्जी से आईडी बनाएं (जो मर्जी सिंबल/नाम)">
-            </div>
-
-            <div class="input-group">
-                <label>सुरक्षित पासवर्ड / पिन (Custom Password / PIN)</label>
-                <input type="text" id="customPin" required placeholder="कितने भी अंकों या अक्षरों का पासवर्ड दर्ज करें">
+                <label>सुरक्षित पासवर्ड / पिन (PIN - 4 Digits)</label>
+                <input type="password" id="customPin" required maxlength="4" placeholder="••••">
             </div>
 
             <div class="input-group">
@@ -614,25 +609,31 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Processing Registration...';
 
-            const customId = document.getElementById('customMerchantId').value.trim();
-            const customPinVal = document.getElementById('customPin').value.trim();
+            // डेटाबेस के uuid कॉलम की मांग पूरी करने के लिए ऑटो-जेनरेटेड UUID
+            const generatedUuid = crypto.randomUUID();
             const rawPhone = document.getElementById('phone').value.trim();
             const fullPhone = activeCountryCode.replace('+', '') + rawPhone;
             const shopNameVal = document.getElementById('shopName').value.trim();
+            const ownerNameVal = document.getElementById('ownerName').value.trim();
             const descriptionVal = document.getElementById('description').value.trim();
+            const customPinVal = document.getElementById('customPin').value.trim();
+            const addressVal = document.getElementById('address').value.trim();
+            const latVal = document.getElementById('lat').value.trim();
+            const lngVal = document.getElementById('lng').value.trim();
 
             const merchantPayload = {
-                id: customId,
+                id: generatedUuid,
                 shop_name: shopNameVal,
-                owner_name: document.getElementById('ownerName').value.trim(),
+                owner_name: ownerNameVal,
                 category: catVal,
-                description: descriptionVal,
+                offer_text: descriptionVal, // विवरण को offer_text/description कॉलम में फिट किया गया है
                 phone: fullPhone,
                 pin: customPinVal,
-                address: document.getElementById('address').value.trim(),
-                lat: document.getElementById('lat').value.trim(),
-                lng: document.getElementById('lng').value.trim(),
-                is_open_today: true
+                address: addressVal,
+                lat: latVal,
+                lng: lngVal,
+                is_open_today: true,
+                profile_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e'
             };
 
             try {
@@ -642,18 +643,18 @@
 
                 if (error) throw error;
 
-                const waMessage = encodeURIComponent(`⭐ *Star Merchant Global Registration* ⭐\n\nHello ${shopNameVal},\nThank you for registering! Your store is now live.\n\n🔑 *Login Credentials:*-\n• Custom Merchant ID: ${customId}\n• Secure Password/PIN: ${customPinVal}\n\nYou can now log in to your dashboard securely.`);
+                const waMessage = encodeURIComponent(`⭐ *Star Merchant Global Registration* ⭐\n\nHello ${shopNameVal},\nThank you for registering! Your store is now live.\n\n🔑 *Generated UUID:* ${generatedUuid}\n📱 *Phone:* +${fullPhone}`);
                 const waLink = `https://wa.me/${fullPhone}?text=${waMessage}`;
 
                 statusBox.className = 'status-box success';
                 statusBox.innerHTML = `
                     <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px;">✨ Thank You for Registration! ✨</h2>
-                    <p style="margin-bottom: 15px; color: var(--text-muted);">Your store has been successfully registered and is now live on the global network.</p>
+                    <p style="margin-bottom: 15px; color: var(--text-muted);">Your store has been successfully registered and saved to Supabase!</p>
                     <div style="text-align: left; background: var(--bg-color); padding: 15px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                        <b>Merchant ID:</b> <code style="color:#059669;">${customId}</code><br>
-                        <b>Secure Password:</b> <code>${customPinVal}</code>
+                        <b>Generated UUID:</b> <code style="color:#059669;">${generatedUuid}</code><br>
+                        <b>Shop Name:</b> <code>${shopNameVal}</code>
                     </div>
-                    <a href="${waLink}" target="_blank" class="whatsapp-share-btn">💬 Send Credentials via WhatsApp</a>
+                    <a href="${waLink}" target="_blank" class="whatsapp-share-btn">💬 Send Confirmation via WhatsApp</a>
                 `;
                 
                 document.getElementById('globalRegForm').reset();
@@ -661,7 +662,7 @@
                 document.getElementById('selectedCategoryText').style.color = 'var(--text-muted)';
             } catch (err) {
                 statusBox.className = 'status-box error';
-                statusBox.textContent = 'Database Error (ID may already exist): ' + err.message;
+                statusBox.textContent = 'Database Error: ' + err.message;
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Register Store 🚀';
