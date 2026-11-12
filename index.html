@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Shop - Global Merchant Registry</title>
+    <title>Star Shop - Cuneiform Edition with Debugger</title>
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -36,69 +36,6 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(255, 255, 255, 0.2);
         }
         .logo span { font-weight: 400; color: #8b9bb4; }
-
-        .subtle-burger {
-            background: #161e31;
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            border-radius: 50%;
-            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6), -2px -2px 5px rgba(255, 255, 255, 0.03);
-            transition: 0.2s;
-        }
-        .subtle-burger span {
-            display: block;
-            width: 16px;
-            height: 2px;
-            background-color: #ffffff;
-        }
-
-        .drawer { 
-            position: fixed; 
-            top: 0; 
-            right: -350px; 
-            width: 320px; 
-            height: 100%; 
-            background: #11151f; 
-            box-shadow: -10px 0 30px rgba(0,0,0,0.8); 
-            z-index: 1000; 
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            padding: 40px; 
-            border-left: 1px solid rgba(255, 255, 255, 0.05); 
-        }
-        .drawer.open { right: 0; }
-        .drawer-close { background: none; border: none; color: #ffffff; font-size: 24px; cursor: pointer; float: right; margin-bottom: 30px; }
-        
-        .drawer-heading {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #8b9bb4;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        .theme-toggle-btn {
-            background: linear-gradient(145deg, #161b27, #121621);
-            border: none;
-            color: #ffffff;
-            padding: 14px 16px;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 12px;
-            box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.7), -3px -3px 8px rgba(255, 255, 255, 0.03);
-        }
-
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; display: none; }
-        .overlay.active { display: block; }
 
         .main-container { 
             max-width: 540px; 
@@ -139,19 +76,16 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        /* 3D इनपुट बॉक्स और अंदर टाइप होने वाले वर्ड्स का 3D Floating इफ़ेक्ट */
         input, textarea {
             width: 100%;
             padding: 16px 18px;
             background: #11151f;
             border: 1.5px solid #2563eb;
             border-radius: 14px;
-            /* टेक्स्ट का कलर बैकग्राउंड टोन से मेल खाता हुआ हल्का म्यूटेड और उभरा हुआ */
             color: #d1d5db;
             font-size: 16px;
             outline: none;
             box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04);
-            /* लेटर्स ऐसे दिखेंगे जैसे बॉक्स के अंदर 3D में तैर रहे हों */
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 -1px 1px rgba(255, 255, 255, 0.1);
             transition: all 0.2s;
         }
@@ -166,56 +100,12 @@
             color: #ffffff;
         }
 
-        .picker-input-box {
-            width: 100%;
-            padding: 16px 18px;
-            background: #11151f;
-            border: 1.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            color: #ffffff;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8), inset -2px -2px 5px rgba(255, 255, 255, 0.03);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-        }
-        .picker-input-box span.placeholder { color: #4b5563; text-shadow: none; }
-
         .phone-row {
             display: grid;
-            grid-template-columns: 140px 1fr;
+            grid-template-columns: 100px 1fr;
             gap: 15px;
         }
 
-        /* 3D उभरा हुआ जियो बटन */
-        .geo-btn {
-            background: linear-gradient(145deg, #141924, #0e121a);
-            border: none;
-            color: #8b9bb4;
-            padding: 14px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border-radius: 12px;
-            box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.7), -4px -4px 10px rgba(255, 255, 255, 0.03);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-            transition: 0.1s;
-        }
-        .geo-btn:active {
-            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8), inset -3px -3px 6px rgba(255, 255, 255, 0.03);
-            transform: translateY(1px);
-        }
-
-        /* 3D सबमिट बटन */
         .submit-btn {
             width: 100%;
             background: linear-gradient(145deg, #2b6ef6, #1d4ed8);
@@ -233,13 +123,11 @@
             justify-content: center;
             gap: 10px;
             border-radius: 14px;
-            box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 6px 6px 14px rgba(0, 0, 0, 0.7), inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 0 -1px 1px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 6px 6px 14px rgba(0, 0, 0, 0.7);
             transition: 0.1s;
         }
         .submit-btn:active {
             transform: translateY(2px);
-            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.6), 0 0 15px rgba(37, 99, 235, 0.4);
         }
 
         .status-box {
@@ -255,92 +143,29 @@
         .status-box.success { border: 1px solid #059669; display: block; }
         .status-box.error { border: 1px solid #dc2626; color: #fca5a5; display: block; text-align: left; }
 
-        .whatsapp-share-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 15px;
-            background: #25d366;
-            color: #000;
-            padding: 14px 22px;
-            font-weight: 800;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 13px;
+        /* ऑन-स्क्रीन एरर कंसोल स्टाइल */
+        .debug-console {
+            margin-top: 30px;
+            background: #05070a;
+            border: 1px solid #ef4444;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #f87171;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
         }
-
-        .fullscreen-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: #0b0e14;
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-            padding: 30px 20px;
-        }
-        .fullscreen-overlay.active { display: flex; }
-
-        .overlay-top-bar {
+        .debug-console h4 {
+            color: #fca5a5;
+            margin-bottom: 8px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+            padding-bottom: 4px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            max-width: 600px;
-            width: 100%;
-            margin-left: auto;
-            margin-right: auto;
         }
-        .overlay-top-bar h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .overlay-close-btn { 
-            background: #161e31; 
-            border: none; 
-            color: #ffffff; 
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            font-size: 20px; 
-            cursor: pointer; 
-            box-shadow: 4px 4px 8px rgba(0,0,0,0.6);
-        }
-
-        .overlay-search-container {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto 20px auto;
-        }
-        .overlay-search-input {
-            width: 100%;
-            padding: 16px;
-            background: #11151f;
-            border: 1.5px solid #2563eb;
-            color: #d1d5db;
-            font-size: 16px;
-            outline: none;
-            border-radius: 14px;
-            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.8);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-        }
-
-        .overlay-list-container {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-            flex: 1;
-            overflow-y: auto;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        .overlay-item {
-            padding: 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 15px;
-            color: #e2e8f0;
-            cursor: pointer;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-            transition: 0.2s;
-        }
-        .overlay-item:hover { background: #161e31; color: #ffffff; }
 
         footer {
             padding: 30px;
@@ -349,61 +174,35 @@
             font-size: 12px;
             color: #8b9bb4;
             background: #11151f;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
-        footer p { margin-bottom: 6px; }
-        footer span { color: #ffffff; font-weight: 600; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">Star Shop <span>Global Merchant Portal</span></div>
-        <button class="subtle-burger" onclick="toggleDrawer()" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+        <div class="logo">Star Shop <span>Merchant Registry</span></div>
     </header>
-
-    <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
-    <div class="drawer" id="drawer">
-        <button class="drawer-close" onclick="toggleDrawer()">&times;</button>
-        <div class="drawer-heading">Appearance Settings</div>
-        <button class="theme-toggle-btn" onclick="toggleTheme()">
-            <span id="themeLabel">3D Floating Text Active</span>
-        </button>
-    </div>
 
     <div class="main-container">
         <div class="registry-header">
-            <h1>Global Merchant Registry</h1>
-            <p>Enter your store details to connect directly with the worldwide hyperlocal network.</p>
+            <h1>Merchant Registration</h1>
+            <p>Enter store credentials to sync with the Cuneiform database ecosystem.</p>
         </div>
 
         <form id="globalRegForm">
             <div class="input-group">
                 <label>दुकान का नाम / Shop Name</label>
-                <input type="text" id="shopName" required placeholder="यहाँ दुकान का नाम लिखें / Enter Shop Name">
+                <input type="text" id="shopName" required placeholder="Enter Shop Name">
             </div>
 
             <div class="input-group">
                 <label>संचालक का नाम / Owner Name</label>
-                <input type="text" id="ownerName" required placeholder="यहाँ अपना नाम लिखें / Enter Owner Name">
+                <input type="text" id="ownerName" required placeholder="Enter Owner Name">
             </div>
 
             <div class="input-group">
                 <label>व्यवसाय श्रेणी / Category</label>
-                <div class="picker-input-box" onclick="openCategoryModal()">
-                    <span id="selectedCategoryText" class="placeholder">श्रेणी चुनें / Select Category...</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                </div>
-                <input type="hidden" id="category" required>
-            </div>
-
-            <div class="input-group">
-                <label>विवरण और शर्तें / Description & Offers</label>
-                <textarea id="description" rows="3" required placeholder="यहाँ अपनी दुकान का विवरण लिखें / Enter Store Description..."></textarea>
+                <input type="text" id="category" required placeholder="e.g., Grocery, Medical">
             </div>
 
             <div class="input-group">
@@ -414,106 +213,32 @@
             <div class="input-group">
                 <label>मोबाइल नंबर / Phone Number</label>
                 <div class="phone-row">
-                    <div class="picker-input-box" onclick="openCountryModal()">
-                        <span id="selectedCountryCode">+91 (IN)</span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    </div>
-                    <input type="tel" id="phone" required placeholder="मोबाइल नंबर डालें / Enter Phone">
+                    <input type="text" value="+91" readonly style="text-align: center; background: #161e31;">
+                    <input type="tel" id="phone" required placeholder="Enter Phone Number">
                 </div>
             </div>
 
             <div class="input-group">
                 <label>पूर्ण पता / Full Address</label>
-                <textarea id="address" rows="2" required placeholder="यहाँ पूरा पता लिखें / Enter Full Address"></textarea>
-            </div>
-
-            <div class="input-group">
-                <label>GPS कोऑर्डिनेट्स / GPS Coordinates</label>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <input type="text" id="lat" placeholder="Latitude">
-                    <input type="text" id="lng" placeholder="Longitude">
-                </div>
-                <button type="button" class="geo-btn" onclick="getLocation()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Fetch GPS Location
-                </button>
+                <textarea id="address" rows="2" required placeholder="Enter Full Address"></textarea>
             </div>
 
             <button type="submit" class="submit-btn" id="submitBtn">
-                Register Store
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Register Store 🚀
             </button>
             
             <div id="statusBox" class="status-box"></div>
+
+            <!-- लाइव एरर कंसोल बॉक्स -->
+            <div class="debug-console" id="debugConsole">
+                <h4><span>🐛 Live Error Console</span> <span onclick="clearConsole()" style="cursor:pointer; color:#9ca3af;">[Clear]</span></h4>
+                <div id="consoleLogContent">System ready. Waiting for action...</div>
+            </div>
         </form>
     </div>
 
-    <!-- Category Search Overlay -->
-    <div class="fullscreen-overlay" id="categoryOverlay">
-        <div class="overlay-top-bar">
-            <h2>Select Category</h2>
-            <button class="overlay-close-btn" onclick="closeCategoryModal()">&times;</button>
-        </div>
-        <div class="overlay-search-container">
-            <input type="text" id="catSearchInput" class="overlay-search-input" placeholder="Search or type custom category..." oninput="filterCategories()">
-        </div>
-        <div class="overlay-list-container" id="catListContainer">
-            <div class="overlay-item" onclick="selectCategory('Grocery & Daily Needs')">Grocery & Daily Needs</div>
-            <div class="overlay-item" onclick="selectCategory('Beauty & Salon')">Beauty & Salon</div>
-            <div class="overlay-item" onclick="selectCategory('General Store')">General Store</div>
-            <div class="overlay-item" onclick="selectCategory('Electronics & Mobile')">Electronics & Mobile</div>
-            <div class="overlay-item" onclick="selectCategory('Food & Restaurant')">Food & Restaurant</div>
-            <div class="overlay-item" onclick="selectCategory('Clothing & Apparel')">Clothing & Apparel</div>
-            <div class="overlay-item" onclick="selectCategory('Medical & Pharmacy')">Medical & Pharmacy</div>
-            <div class="overlay-item" onclick="selectCategory('Hardware & Tools')">Hardware & Tools</div>
-            <div class="overlay-item" onclick="selectCategory('Stationery & Books')">Stationery & Books</div>
-            <div class="overlay-item" onclick="selectCategory('Footwear')">Footwear</div>
-            <div class="overlay-item" onclick="selectCategory('Automotive & Spares')">Automotive & Spares</div>
-            <div class="overlay-item" onclick="selectCategory('Fresh Produce & Fruits')">Fresh Produce & Fruits</div>
-            <div class="overlay-item" onclick="selectCategory('Dairy & Milk')">Dairy & Milk</div>
-            <div class="overlay-item" onclick="selectCategory('Fitness & Gym')">Fitness & Gym</div>
-            <div class="overlay-item" onclick="selectCategory('Home Decor')">Home Decor</div>
-            <div class="overlay-item" onclick="selectCategory('Jewellery & Watches')">Jewellery & Watches</div>
-        </div>
-    </div>
-
-    <!-- Country Code Search Overlay -->
-    <div class="fullscreen-overlay" id="countryOverlay">
-        <div class="overlay-top-bar">
-            <h2>Select Country Code</h2>
-            <button class="overlay-close-btn" onclick="closeCountryModal()">&times;</button>
-        </div>
-        <div class="overlay-search-container">
-            <input type="text" id="countrySearchInput" class="overlay-search-input" placeholder="Search country or code..." oninput="filterCountries()">
-        </div>
-        <div class="overlay-list-container" id="countryListContainer">
-            <div class="overlay-item" onclick="selectCountry('+91', 'IN')">+91 — India (भारत)</div>
-            <div class="overlay-item" onclick="selectCountry('+1', 'US/CA')">+1 — United States / Canada</div>
-            <div class="overlay-item" onclick="selectCountry('+44', 'GB')">+44 — United Kingdom</div>
-            <div class="overlay-item" onclick="selectCountry('+61', 'AU')">+61 — Australia</div>
-            <div class="overlay-item" onclick="selectCountry('+971', 'AE')">+971 — United Arab Emirates</div>
-            <div class="overlay-item" onclick="selectCountry('+966', 'SA')">+966 — Saudi Arabia</div>
-            <div class="overlay-item" onclick="selectCountry('+49', 'DE')">+49 — Germany</div>
-            <div class="overlay-item" onclick="selectCountry('+33', 'FR')">+33 — France</div>
-            <div class="overlay-item" onclick="selectCountry('+81', 'JP')">+81 — Japan</div>
-            <div class="overlay-item" onclick="selectCountry('+86', 'CN')">+86 — China</div>
-            <div class="overlay-item" onclick="selectCountry('+65', 'SG')">+65 — Singapore</div>
-            <div class="overlay-item" onclick="selectCountry('+60', 'MY')">+60 — Malaysia</div>
-            <div class="overlay-item" onclick="selectCountry('+92', 'PK')">+92 — Pakistan</div>
-            <div class="overlay-item" onclick="selectCountry('+880', 'BD')">+880 — Bangladesh</div>
-            <div class="overlay-item" onclick="selectCountry('+94', 'LK')">+94 — Sri Lanka</div>
-            <div class="overlay-item" onclick="selectCountry('+977', 'NP')">+977 — Nepal</div>
-            <div class="overlay-item" onclick="selectCountry('+39', 'IT')">+39 — Italy</div>
-            <div class="overlay-item" onclick="selectCountry('+34', 'ES')">+34 — Spain</div>
-            <div class="overlay-item" onclick="selectCountry('+55', 'BR')">+55 — Brazil</div>
-            <div class="overlay-item" onclick="selectCountry('+7', 'RU')">+7 — Russia</div>
-        </div>
-    </div>
-
     <footer>
-        <p><span>Star Shop & Star Merchant Ecosystem</span> — Global Hyperlocal Commercial Network</p>
-        <p>Official Support: <a href="mailto:support@starshop.ecosystem" style="color: #8b9bb4; text-decoration: underline;">support@support.ecosystem</a></p>
-        <p style="margin-top: 10px; font-size: 11px;">© 2026 All Rights Reserved. Secured via Supabase Backend Infrastructure.</p>
+        <p><span>Star Shop Ecosystem</span> — Secured via Supabase Backend Infrastructure.</p>
     </footer>
 
     <script>
@@ -521,185 +246,77 @@
         const SUPABASE_ANON_KEY = "sb_publishable_ajo-GdO4PcqhQDTcde9m7w_Ib6kzaVM";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let activeCountryCode = '+91';
-
-        function toggleDrawer() {
-            document.getElementById('drawer').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
+        function logError(message) {
+            const consoleContent = document.getElementById('consoleLogContent');
+            const timeStr = new Date().toLocaleTimeString();
+            consoleContent.innerHTML += `<br><span style="color:#f87171;">[${timeStr}] ${message}</span>`;
+            const box = document.getElementById('debugConsole');
+            box.scrollTop = box.scrollHeight;
         }
 
-        function toggleTheme() {
-            alert('3D Floating Text Dark Theme is permanently active!');
+        function clearConsole() {
+            document.getElementById('consoleLogContentinnerHTML').innerHTML = 'Console cleared.';
         }
 
-        function openCategoryModal() {
-            document.getElementById('categoryOverlay').classList.add('active');
-            document.getElementById('catSearchInput').focus();
-        }
-        function closeCategoryModal() {
-            document.getElementById('categoryOverlay').classList.remove('active');
-        }
-        function selectCategory(catName) {
-            document.getElementById('category').value = catName;
-            const textSpan = document.getElementById('selectedCategoryText');
-            textSpan.textContent = catName;
-            textSpan.style.color = '#ffffff';
-            closeCategoryModal();
-        }
-        function filterCategories() {
-            const query = document.getElementById('catSearchInput').value.toLowerCase().trim();
-            const container = document.getElementById('catListContainer');
-            
-            if (query.length > 0) {
-                let customOpt = document.getElementById('customCatOption');
-                if (!customOpt) {
-                    customOpt = document.createElement('div');
-                    customOpt.id = 'customCatOption';
-                    customOpt.className = 'overlay-item';
-                    customOpt.style.color = '#38bdf8';
-                    customOpt.onclick = function() { selectCategory(query); };
-                    container.insertBefore(customOpt, container.firstChild);
-                }
-                customOpt.textContent = `➕ Add Custom Category: "${query}"`;
-            } else {
-                const customOpt = document.getElementById('customCatOption');
-                if (customOpt) customOpt.remove();
-            }
-
-            const items = container.getElementsByClassName('overlay-item');
-            for (let item of items) {
-                if (item.id === 'customCatOption') continue;
-                item.style.display = item.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            }
-        }
-
-        function openCountryModal() {
-            document.getElementById('countryOverlay').classList.add('active');
-            document.getElementById('countrySearchInput').focus();
-        }
-        function closeCountryModal() {
-            document.getElementById('countryOverlay').classList.remove('active');
-        }
-        function selectCountry(code, country) {
-            activeCountryCode = code;
-            document.getElementById('selectedCountryCode').textContent = `${code} (${country})`;
-            closeCountryModal();
-        }
-        function filterCountries() {
-            const query = document.getElementById('countrySearchInput').value.toLowerCase().trim();
-            const container = document.getElementById('countryListContainer');
-            
-            if (query.length > 0 && query.startsWith('+')) {
-                let customCountryOpt = document.getElementById('customCountryOpt');
-                if (!customCountryOpt) {
-                    customCountryOpt = document.createElement('div');
-                    customCountryOpt.id = 'customCountryOpt';
-                    customCountryOpt.className = 'overlay-item';
-                    customCountryOpt.style.color = '#38bdf8';
-                    customCountryOpt.onclick = function() { selectCountry(query, 'Custom'); };
-                    container.insertBefore(customCountryOpt, container.firstChild);
-                }
-                customCountryOpt.textContent = `➕ Use Custom Code: "${query}"`;
-            } else {
-                const customCountryOpt = document.getElementById('customCountryOpt');
-                if (customCountryOpt) customCountryOpt.remove();
-            }
-
-            const items = container.getElementsByClassName('overlay-item');
-            for (let item of items) {
-                if (item.id === 'customCountryOpt') continue;
-                item.style.display = item.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            }
-        }
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        document.getElementById('lat').value = position.coords.latitude;
-                        document.getElementById('lng').value = position.coords.longitude;
-                        alert('GPS location fetched successfully!');
-                    },
-                    (error) => {
-                        alert('Unable to retrieve location: ' + error.message);
-                    }
-                );
-            } else {
-                alert('Geolocation is not supported by your browser.');
-            }
-        }
+        // Global error catcher
+        window.onerror = function(msg, url, line) {
+            logError(`JS Error: ${msg} (Line: ${line})`);
+        };
 
         document.getElementById('globalRegForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const catVal = document.getElementById('category').value;
-            if (!catVal) {
-                alert('Please select or type your business category!');
-                openCategoryModal();
-                return;
-            }
-
             const submitBtn = document.getElementById('submitBtn');
             const statusBox = document.getElementById('statusBox');
             
             statusBox.className = 'status-box';
             statusBox.style.display = 'none';
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing Registration...';
+            submitBtn.textContent = 'Processing...';
 
             const generatedUuid = crypto.randomUUID();
             const rawPhone = document.getElementById('phone').value.trim();
-            const fullPhone = activeCountryCode.replace('+', '') + rawPhone;
+            const fullPhone = '91' + rawPhone;
             const shopNameVal = document.getElementById('shopName').value.trim();
             const ownerNameVal = document.getElementById('ownerName').value.trim();
-            const descriptionVal = document.getElementById('description').value.trim();
+            const catVal = document.getElementById('category').value.trim();
             const customPinVal = document.getElementById('customPin').value.trim();
             const addressVal = document.getElementById('address').value.trim();
-            const latVal = document.getElementById('lat').value.trim();
-            const lngVal = document.getElementById('lng').value.trim();
 
             const merchantPayload = {
                 id: generatedUuid,
                 shop_name: shopNameVal,
                 owner_name: ownerNameVal,
                 category: catVal,
-                offer_text: descriptionVal,
                 phone: fullPhone,
                 pin: customPinVal,
                 address: addressVal,
-                lat: latVal,
-                lng: lngVal,
-                is_open_today: true,
-                profile_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e'
+                is_open_today: true
             };
 
             try {
-                const { error } = await supabaseClient
+                logError(`Attempting insert for: ${shopNameVal}`);
+                const { data, error } = await supabaseClient
                     .from('merchants')
                     .insert([merchantPayload]);
 
-                if (error) throw error;
-
-                const waMessage = encodeURIComponent(`⭐ *Star Merchant Global Registration* ⭐\n\nHello ${shopNameVal},\nThank you for registering! Your store is now live.\n\n🔑 *Generated UUID:* ${generatedUuid}\n📱 *Phone:* +${fullPhone}`);
-                const waLink = `https://wa.me/${fullPhone}?text=${waMessage}`;
+                if (error) {
+                    logError(`Supabase Error Code: ${error.code} - ${error.message}`);
+                    throw error;
+                }
 
                 statusBox.className = 'status-box success';
                 statusBox.innerHTML = `
-                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 10px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ Thank You for Registration! ✨</h2>
-                    <p style="margin-bottom: 15px; color: #8b9bb4;">Your store has been successfully registered and saved to Supabase!</p>
-                    <div style="text-align: left; background: #0b0e14; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px;">
-                        <b>Generated UUID:</b> <code style="color:#34d399;">${generatedUuid}</code><br>
-                        <b>Shop Name:</b> <code>${shopNameVal}</code>
-                    </div>
-                    <a href="${waLink}" target="_blank" class="whatsapp-share-btn">💬 Send Confirmation via WhatsApp</a>
+                    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #ffffff;">✨ Registered Successfully! ✨</h2>
+                    <p style="color: #8b9bb4;">Store data saved to Supabase.</p>
+                    <code style="color:#34d399;">UUID: ${generatedUuid}</code>
                 `;
                 
                 document.getElementById('globalRegForm').reset();
-                document.getElementById('selectedCategoryText').textContent = 'Select or search category...';
-                document.getElementById('selectedCategoryText').style.color = '#4b5563';
             } catch (err) {
                 statusBox.className = 'status-box error';
                 statusBox.textContent = 'Database Error: ' + err.message;
+                logError(`Catch Exception: ${err.message}`);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Register Store 🚀';
