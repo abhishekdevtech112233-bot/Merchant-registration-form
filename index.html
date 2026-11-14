@@ -1,327 +1,2412 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Shop - Cuneiform Edition with Debugger</title>
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        
-        body { 
-            background-color: #0b0e14; 
-            color: #ffffff; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STAR SHOP - Merchant Registration</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --page-bg: #f5f5f5;
+      --paper-bg: #ffffff;
+      --surface-bg: #fafafa;
+      --ink: #0a0a0a;
+      --muted: #666666;
+      --border: #e5e5e5;
+      --border-strong: #0a0a0a;
+      --btn-bg: #0a0a0a;
+      --btn-text: #ffffff;
+      --invert-bg: #f2f2f2;
+      --pulse-color: rgba(10, 10, 10, 0.22);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+    }
 
-        header { 
-            padding: 20px 30px; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #11151f;
-        }
-        
-        .logo { 
-            font-size: 16px; 
-            font-weight: 800; 
-            letter-spacing: -0.5px; 
-            text-transform: uppercase; 
-            color: #ffffff; 
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 -1px 1px rgba(255, 255, 255, 0.2);
-        }
-        .logo span { font-weight: 400; color: #8b9bb4; }
+    [data-theme="dark"] {
+      --page-bg: #090909;
+      --paper-bg: #121212;
+      --surface-bg: #181818;
+      --ink: #f5f5f5;
+      --muted: #9a9a9a;
+      --border: #262626;
+      --border-strong: #f5f5f5;
+      --btn-bg: #f5f5f5;
+      --btn-text: #0a0a0a;
+      --invert-bg: #1f1f1f;
+      --pulse-color: rgba(245, 245, 245, 0.28);
+      --shadow: 0 24px 65px rgba(0, 0, 0, 0.55);
+    }
 
-        .main-container { 
-            max-width: 540px; 
-            width: 100%; 
-            margin: 40px auto; 
-            padding: 0 20px; 
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
 
-        .registry-header {
-            margin-bottom: 35px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 20px;
-        }
-        .registry-header h1 {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 -1px 1px rgba(255, 255, 255, 0.25);
-        }
-        .registry-header p {
-            font-size: 14px;
-            color: #8b9bb4;
-        }
+    body {
+      background-color: var(--page-bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 36px 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
 
-        .input-group {
-            margin-bottom: 25px;
-        }
-        label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #8b9bb4;
-            margin-bottom: 10px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-        }
+    .wrapper {
+      width: 100%;
+      max-width: 740px;
+      background-color: var(--paper-bg);
+      border: none;
+      border-radius: 2px;
+      box-shadow: var(--shadow);
+      transition: background-color 0.25s ease;
+    }
 
-        input, textarea {
-            width: 100%;
-            padding: 16px 18px;
-            background: #11151f;
-            border: 1.5px solid #2563eb;
-            border-radius: 14px;
-            color: #d1d5db;
-            font-size: 16px;
-            outline: none;
-            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 -1px 1px rgba(255, 255, 255, 0.1);
-            transition: all 0.2s;
-        }
-        
-        input::placeholder, textarea::placeholder {
-            color: #4b5563;
-            text-shadow: none;
-        }
+    /* Header */
+    .header {
+      padding: 34px 40px 26px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
 
-        input:focus, textarea:focus {
-            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.9), inset -3px -3px 6px rgba(255, 255, 255, 0.04), 0 0 15px rgba(37, 99, 235, 0.4);
-            color: #ffffff;
-        }
+    .brand-block {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
 
-        .phone-row {
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            gap: 15px;
-        }
+    .brand-emblem {
+      width: 40px;
+      height: 40px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
 
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(145deg, #2b6ef6, #1d4ed8);
-            color: #ffffff;
-            border: none;
-            padding: 16px;
-            font-size: 14px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border-radius: 14px;
-            box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 6px 6px 14px rgba(0, 0, 0, 0.7);
-            transition: 0.1s;
-        }
-        .submit-btn:active {
-            transform: translateY(2px);
-        }
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink);
+      line-height: 1.05;
+    }
 
-        .status-box {
-            margin-top: 25px;
-            padding: 25px;
-            font-size: 14px;
-            display: none;
-            border-radius: 16px;
-            background: #11151f;
-            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.8);
-            text-align: center;
-        }
-        .status-box.success { border: 1px solid #059669; display: block; }
-        .status-box.error { border: 1px solid #dc2626; color: #fca5a5; display: block; text-align: left; }
+    .brand-subtitle {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
 
-        /* ऑन-स्क्रीन एरर कंसोल स्टाइल */
-        .debug-console {
-            margin-top: 30px;
-            background: #05070a;
-            border: 1px solid #ef4444;
-            border-radius: 12px;
-            padding: 15px;
-            font-family: monospace;
-            font-size: 12px;
-            color: #f87171;
-            max-height: 200px;
-            overflow-y: auto;
-            text-align: left;
-        }
-        .debug-console h4 {
-            color: #fca5a5;
-            margin-bottom: 8px;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
-            padding-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
+    .doc-note {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.45;
+    }
 
-        footer {
-            padding: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            font-size: 12px;
-            color: #8b9bb4;
-            background: #11151f;
-        }
-    </style>
+    /* Header Actions: Voice Mode Pill + Circular Lighting Toggle */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .voice-mode-btn {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .voice-mode-btn:hover {
+      border-color: var(--border-strong);
+    }
+
+    .voice-mode-btn.active {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-color: var(--border-strong);
+      animation: missingPulse 1.4s ease-in-out infinite;
+    }
+
+    .circle-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .circle-icon-btn:hover {
+      border-color: var(--border-strong);
+      transform: scale(1.06);
+    }
+
+    .circle-icon-btn.active {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-color: var(--border-strong);
+    }
+
+    /* Form Body */
+    .form-body { padding: 32px 40px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--ink);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 9px;
+      margin: 30px 0 18px;
+      cursor: pointer;
+    }
+
+    .section-head:first-child { margin-top: 0; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .label-row label { margin-bottom: 0; }
+
+    .opt {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 11.5px;
+    }
+
+    .char-count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Input Wrapper with Smart Voice Mic (Hidden until Voice Mode is ON) */
+    .input-mic-wrap {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background-color: var(--surface-bg);
+      transition: border-color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .input-mic-wrap:focus-within {
+      border-color: var(--border-strong);
+      background-color: var(--paper-bg);
+    }
+
+    .input-mic-wrap input,
+    .input-mic-wrap textarea {
+      border: none !important;
+      background: transparent !important;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-mic-wrap input:focus,
+    .input-mic-wrap textarea:focus {
+      box-shadow: none;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="time"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 14px;
+      color: var(--ink);
+      background-color: var(--surface-bg);
+      transition: border-color 0.18s ease, background-color 0.18s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--border-strong);
+      background-color: var(--paper-bg);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 74px;
+    }
+
+    /* Smart Mic Button: Only shown when Voice Mode is enabled */
+    .mic-field-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      border: none;
+      border-left: 1px solid var(--border);
+      background: var(--surface-bg);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    body.voice-mode-on .mic-field-btn {
+      display: inline-flex;
+    }
+
+    .mic-field-btn:hover {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    .mic-field-btn.listening {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      animation: missingPulse 1s ease-in-out infinite;
+    }
+
+    /* Missing Field Highlight */
+    @keyframes missingPulse {
+      0%   { box-shadow: 0 0 0 0 var(--pulse-color); }
+      50%  { box-shadow: 0 0 0 4px var(--pulse-color); }
+      100% { box-shadow: 0 0 0 0 var(--pulse-color); }
+    }
+
+    .field-missing {
+      border: 1.5px solid var(--border-strong) !important;
+      background-color: var(--paper-bg) !important;
+      animation: missingPulse 1.2s ease-in-out infinite;
+    }
+
+    .field-warn-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 4px 9px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      border-radius: 2px;
+    }
+
+    /* Clean ID & Password Block (Only Eye inside; Auto in Action Row below) */
+    .id-column-box {
+      background: var(--surface-bg);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 18px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .id-input-group {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--paper-bg);
+      overflow: hidden;
+      transition: border-color 0.18s ease;
+    }
+
+    .id-input-group:focus-within { border-color: var(--border-strong); }
+
+    .id-input-group input {
+      border: none;
+      background: transparent;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.8px;
+      padding: 11px 13px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .id-eye-btn {
+      border: none;
+      border-left: 1px solid var(--border);
+      background: var(--surface-bg);
+      color: var(--ink);
+      padding: 0 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      transition: background-color 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .id-eye-btn:hover {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    /* Clean External Action Row below ID & Password */
+    .field-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .action-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--paper-bg);
+      color: var(--ink);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .action-pill-btn:hover {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-color: var(--border-strong);
+    }
+
+    .id-helper {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Category Picker */
+    .cat-trigger-row {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--surface-bg);
+      overflow: hidden;
+    }
+
+    .cat-trigger {
+      flex: 1;
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--ink);
+      min-width: 0;
+    }
+
+    .cat-trigger-row.active {
+      border-color: var(--border-strong);
+      background: var(--paper-bg);
+    }
+
+    .cat-trigger-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .cat-placeholder { color: var(--muted); }
+
+    .cat-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--paper-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      box-shadow: var(--shadow);
+      z-index: 100;
+    }
+
+    .cat-panel.open { display: block; }
+
+    .cat-search-bar {
+      padding: 10px;
+      background: var(--surface-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .cat-search-bar input {
+      border: 1px solid var(--border);
+      background: var(--paper-bg);
+      padding: 8px 10px;
+      font-size: 13.5px;
+    }
+
+    .cat-list-page {
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 6px;
+    }
+
+    .cat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .cat-item:hover {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    .cat-item-icon {
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cat-custom-btn {
+      display: none;
+      align-items: center;
+      gap: 9px;
+      padding: 10px;
+      margin-bottom: 6px;
+      border: 1px dashed var(--border-strong);
+      background: var(--surface-bg);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cat-custom-btn:hover {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    /* Coordinates Card */
+    .coord-card {
+      border: 1px solid var(--border);
+      background: var(--surface-bg);
+      border-radius: 2px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .coord-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .btn-coord-fetch {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-coord-fetch:hover:not(:disabled) { opacity: 0.85; }
+    .btn-coord-fetch:disabled { opacity: 0.65; cursor: wait; }
+
+    .spin-svg { animation: spin 0.9s linear infinite; }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .coord-status-badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      background: var(--paper-bg);
+      border-radius: 2px;
+    }
+
+    .coord-status-badge.ok {
+      color: var(--btn-text);
+      background: var(--btn-bg);
+      border-color: var(--border-strong);
+    }
+
+    .coord-fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .coord-fields-grid input[readonly] {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: 13.5px;
+      background: var(--paper-bg);
+      border-color: var(--border);
+    }
+
+    .coord-fields-grid input[readonly].filled {
+      border-color: var(--border-strong);
+    }
+
+    .coord-result-strip {
+      display: none;
+      margin-top: 12px;
+      padding: 11px 14px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-radius: 2px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .coord-result-text {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .coord-result-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .strip-btn {
+      background: transparent;
+      color: var(--btn-text);
+      border: 1px solid currentColor;
+      padding: 4px 9px;
+      border-radius: 2px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .strip-btn:hover { opacity: 0.8; }
+
+    /* Upload Zone */
+    .upload-zone {
+      position: relative;
+      border: 1px dashed var(--border-strong);
+      border-radius: 2px;
+      background: var(--surface-bg);
+      padding: 22px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.18s ease;
+    }
+
+    .upload-zone:hover { background: var(--invert-bg); }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-svg-box {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 10px;
+      border: 1px solid var(--border);
+      background: var(--paper-bg);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+    }
+
+    #previewBox {
+      display: none;
+      margin-top: 12px;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    #previewImg {
+      width: 58px;
+      height: 58px;
+      object-fit: cover;
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+    }
+
+    /* Policy Check */
+    .policy-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface-bg);
+      border-radius: 2px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .policy-check input {
+      margin-top: 2px;
+      width: 15px;
+      height: 15px;
+      accent-color: var(--ink);
+      cursor: pointer;
+    }
+
+    .policy-check label {
+      margin: 0;
+      font-weight: 500;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      font-size: 13.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity 0.18s ease;
+    }
+
+    .btn-submit:hover:not(:disabled) { opacity: 0.88; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .error-banner {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-bg);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Success Slip */
+    #successScreen {
+      display: none;
+      padding: 38px 40px;
+      text-align: center;
+    }
+
+    .slip-badge {
+      width: 54px;
+      height: 54px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+
+    .cred-card {
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--surface-bg);
+      padding: 18px 22px;
+      margin: 22px 0;
+      text-align: left;
+    }
+
+    .cred-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 13.5px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cred-row:last-child { border-bottom: none; }
+    .cred-label { color: var(--muted); font-weight: 600; }
+    .cred-val-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .cred-val {
+      font-weight: 800;
+      color: var(--ink);
+      text-align: right;
+      letter-spacing: 0.5px;
+    }
+
+    .mini-icon-btn {
+      border: 1px solid var(--border);
+      background: var(--paper-bg);
+      color: var(--ink);
+      padding: 4px 8px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .mini-icon-btn:hover {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    .btn-whatsapp {
+      width: 100%;
+      padding: 14px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+
+    .btn-whatsapp:hover { opacity: 0.88; }
+
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--ink);
+      padding: 10px 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    .btn-reset:hover { border-color: var(--border-strong); }
+
+    /* Footer */
+    .form-footer {
+      background: var(--surface-bg);
+      border-top: 1px solid var(--border);
+      padding: 18px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .footer-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px 10px; }
+      .header {
+        padding: 22px 20px 18px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .header-actions {
+        justify-content: flex-end;
+      }
+      .grid-2, .grid-3, .coord-fields-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .form-body, #successScreen {
+        padding: 22px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">Star Shop <span>Merchant Registry</span></div>
-    </header>
-
-    <div class="main-container">
-        <div class="registry-header">
-            <h1>Merchant Registration</h1>
-            <p>Enter store credentials to sync with the Cuneiform database ecosystem.</p>
+  <div class="wrapper">
+    <!-- Header: Voice Mode Toggle + Circular Lighting Toggle -->
+    <div class="header">
+      <div class="brand-block">
+        <div class="brand-emblem">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L14.9 8.6L22 9.3L16.6 14L18.2 21L12 17.3L5.8 21L7.4 14L2 9.3L9.1 8.6L12 2Z"/>
+          </svg>
         </div>
+        <div>
+          <div class="brand-title">STAR SHOP</div>
+          <div class="brand-subtitle" data-i18n="subtitle">Merchant Registration &amp; Policy Form</div>
+          <div class="doc-note" data-i18n="docNote">Tap any box to hear guidance, or turn on Voice Mode to speak &amp; fill.</div>
+        </div>
+      </div>
 
-        <form id="globalRegForm">
-            <div class="input-group">
-                <label>दुकान का नाम / Shop Name</label>
-                <input type="text" id="shopName" required placeholder="Enter Shop Name">
-            </div>
+      <div class="header-actions">
+        <button type="button" class="voice-mode-btn" id="voiceModeToggle" title="Toggle Voice Mode">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          </svg>
+          <span id="voiceModeText" data-i18n="voiceBtn">Voice Mode</span>
+        </button>
 
-            <div class="input-group">
-                <label>संचालक का नाम / Owner Name</label>
-                <input type="text" id="ownerName" required placeholder="Enter Owner Name">
-            </div>
-
-            <div class="input-group">
-                <label>व्यवसाय श्रेणी / Category</label>
-                <input type="text" id="category" required placeholder="e.g., Grocery, Medical">
-            </div>
-
-            <div class="input-group">
-                <label>सुरक्षित पिन / PIN (4 Digits)</label>
-                <input type="password" id="customPin" required maxlength="4" placeholder="••••">
-            </div>
-
-            <div class="input-group">
-                <label>मोबाइल नंबर / Phone Number</label>
-                <div class="phone-row">
-                    <input type="text" value="+91" readonly style="text-align: center; background: #161e31;">
-                    <input type="tel" id="phone" required placeholder="Enter Phone Number">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>पूर्ण पता / Full Address</label>
-                <textarea id="address" rows="2" required placeholder="Enter Full Address"></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">
-                Register Store 🚀
-            </button>
-            
-            <div id="statusBox" class="status-box"></div>
-
-            <!-- लाइव एरर कंसोल बॉक्स -->
-            <div class="debug-console" id="debugConsole">
-                <h4><span>🐛 Live Error Console</span> <span onclick="clearConsole()" style="cursor:pointer; color:#9ca3af;">[Clear]</span></h4>
-                <div id="consoleLogContent">System ready. Waiting for action...</div>
-            </div>
-        </form>
+        <button type="button" class="circle-icon-btn" id="themeToggle" title="Switch Light / Black">
+          <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <footer>
-        <p><span>Star Shop Ecosystem</span> — Secured via Supabase Backend Infrastructure.</p>
-    </footer>
+    <!-- Form -->
+    <form id="starShopForm" class="form-body" novalidate>
 
-    <script>
-        const SUPABASE_URL = "https://fzerbvhdaqifaeabdjkj.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_ajo-GdO4PcqhQDTcde9m7w_Ib6kzaVM";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      <!-- 1. Shop & Owner Details -->
+      <div class="section-head" data-speak="sec1">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span data-i18n="sec1">1. Shop ID, Password &amp; Owner Details</span>
+      </div>
 
-        function logError(message) {
-            const consoleContent = document.getElementById('consoleLogContent');
-            const timeStr = new Date().toLocaleTimeString();
-            consoleContent.innerHTML += `<br><span style="color:#f87171;">[${timeStr}] ${message}</span>`;
-            const box = document.getElementById('debugConsole');
-            box.scrollTop = box.scrollHeight;
+      <!-- Clean ID & Password Box (Only Eye icon inside; Auto in Action Row below) -->
+      <div class="id-column-box">
+        <div id="groupStarId">
+          <label for="starIdInput"><span data-i18n="idColLabel">Star Shop ID (Type Your Own or Use Auto)</span> *</label>
+          <div class="id-input-group" id="starIdGroup">
+            <input type="password" id="starIdInput" data-speak="starId" data-i18n-ph="idPh" placeholder="Enter custom ID or click Auto" />
+            <button type="button" class="mic-field-btn" data-target="starIdInput" data-type="id" title="Speak ID">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+            <button type="button" class="id-eye-btn" id="toggleIdEyeBtn" title="Show / Hide ID">
+              <svg id="idEyeSvg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+              <span id="idEyeText" data-i18n="showBtn">View</span>
+            </button>
+          </div>
+          <div class="field-action-row">
+            <button type="button" class="action-pill-btn" id="autoIdBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              <span data-i18n="autoIdBtn">Generate Auto ID</span>
+            </button>
+            <span class="id-helper" data-i18n="idHint">You can type your own ID or generate one. Copy/WhatsApp is on the final slip.</span>
+          </div>
+        </div>
+
+        <div id="groupPass">
+          <label for="userPassInput"><span data-i18n="passColLabel">Create Your Password (or Use Auto)</span></label>
+          <div class="id-input-group" id="userPassGroup">
+            <input type="password" id="userPassInput" data-speak="password" data-i18n-ph="passPh" placeholder="Type your own password (or leave blank for Auto)" />
+            <button type="button" class="mic-field-btn" data-target="userPassInput" data-type="text" title="Speak Password">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+            <button type="button" class="id-eye-btn" id="togglePassEyeBtn" title="Show / Hide Password">
+              <svg id="passEyeSvg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+              <span id="passEyeText" data-i18n="showBtn">View</span>
+            </button>
+          </div>
+          <div class="field-action-row">
+            <button type="button" class="action-pill-btn" id="autoPassBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              <span data-i18n="autoPassBtn">Generate Auto Password</span>
+            </button>
+            <span class="id-helper" data-i18n="passHint">Leave blank to auto-generate when you submit.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group" id="groupPhone">
+          <label for="phone"><span data-i18n="phoneLabel">Mobile / WhatsApp Number</span> *</label>
+          <div class="input-mic-wrap" id="phoneWrap">
+            <input type="tel" id="phone" data-speak="phone" data-i18n-ph="phonePh" placeholder="10-digit mobile number" maxlength="10" />
+            <button type="button" class="mic-field-btn" data-target="phone" data-type="phone" title="Speak Phone Number">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" id="groupOwner">
+          <label for="ownerName"><span data-i18n="ownerLabel">Owner Full Name</span> *</label>
+          <div class="input-mic-wrap" id="ownerWrap">
+            <input type="text" id="ownerName" data-speak="owner" data-i18n-ph="ownerPh" placeholder="e.g. Rajesh Verma" />
+            <button type="button" class="mic-field-btn" data-target="ownerName" data-type="text" title="Speak Owner Name">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group" id="groupShop">
+          <label for="shopName"><span data-i18n="shopLabel">Shop Name</span> *</label>
+          <div class="input-mic-wrap" id="shopWrap">
+            <input type="text" id="shopName" data-speak="shop" data-i18n-ph="shopPh" placeholder="e.g. Verma General Store" />
+            <button type="button" class="mic-field-btn" data-target="shopName" data-type="text" title="Speak Shop Name">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" id="categoryWrapper">
+          <label><span data-i18n="catLabel">Shop Category</span> *</label>
+          <input type="hidden" id="categoryValue" />
+          <div class="cat-trigger-row" id="catTriggerRow">
+            <div class="cat-trigger" id="catTrigger" tabindex="0" data-speak="category">
+              <div class="cat-trigger-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <span id="catDisplayText" class="cat-placeholder" data-i18n="catPh">Select or search category...</span>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+            <button type="button" class="mic-field-btn" data-target="category" data-type="category" title="Speak Category">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+          </div>
+
+          <div class="cat-panel" id="catPanel">
+            <div class="cat-search-bar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="catSearchInput" data-i18n-ph="catSearchPh" placeholder="Search category or type your own..." autocomplete="off" />
+            </div>
+            <div class="cat-list-page">
+              <div class="cat-custom-btn" id="catCustomBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                <span id="catCustomLabel">Add Category</span>
+              </div>
+              <div id="catItemsContainer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label for="shopDescription"><span data-i18n="descLabel">Shop Description</span> <span class="opt" data-i18n="optTag">(Optional)</span></label>
+          <span class="char-count" id="descCount">0 / 300</span>
+        </div>
+        <div class="input-mic-wrap">
+          <textarea id="shopDescription" maxlength="300" data-speak="description" data-i18n-ph="descPh" placeholder="Write about your shop — products sold, special services, or home delivery..."></textarea>
+          <button type="button" class="mic-field-btn" data-target="shopDescription" data-type="text" title="Speak Shop Description">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Business Timing -->
+      <div class="section-head" data-speak="sec2">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span data-i18n="sec2">2. Shop Business Hours</span>
+      </div>
+
+      <div class="grid-3">
+        <div class="form-group" id="groupOpenTime">
+          <label for="openTime"><span data-i18n="openLabel">Opening Time</span> *</label>
+          <input type="time" id="openTime" value="09:00" data-speak="openTime" />
+        </div>
+        <div class="form-group" id="groupCloseTime">
+          <label for="closeTime"><span data-i18n="closeLabel">Closing Time</span> *</label>
+          <input type="time" id="closeTime" value="21:00" data-speak="closeTime" />
+        </div>
+        <div class="form-group">
+          <label for="openDays"><span data-i18n="daysLabel">Open Days</span> *</label>
+          <select id="openDays" data-speak="openDays">
+            <option value="All 7 Days (Mon - Sun)" data-i18n="day7">All 7 Days (Daily)</option>
+            <option value="6 Days (Mon - Sat)" data-i18n="day6a">Mon - Sat (Sunday Closed)</option>
+            <option value="6 Days (Tue - Sun)" data-i18n="day6b">Tue - Sun (Monday Closed)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 3. Coordinates & Address -->
+      <div class="section-head" data-speak="sec3">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span data-i18n="sec3">3. Shop Exact Location &amp; Address</span>
+      </div>
+
+      <div id="groupCoords">
+        <div class="coord-card" id="coordCard">
+          <div class="coord-header-row">
+            <button type="button" class="btn-coord-fetch" id="fetchLocBtn" data-speak="fetchLoc">
+              <span id="fetchBtnIcon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>
+                  <circle cx="12" cy="12" r="9"/>
+                </svg>
+              </span>
+              <span id="fetchBtnLabel" data-i18n="locBtn">Get Exact Shop Coordinates</span>
+            </button>
+
+            <span class="coord-status-badge" id="locStatus">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <span id="locStatusText" data-i18n="locHint">Not captured yet</span>
+            </span>
+          </div>
+
+          <div class="coord-fields-grid">
+            <div>
+              <label for="latField" data-i18n="latLabel">Latitude</label>
+              <input type="text" id="latField" placeholder="--.------" readonly />
+            </div>
+            <div>
+              <label for="lngField" data-i18n="lngLabel">Longitude</label>
+              <input type="text" id="lngField" placeholder="--.------" readonly />
+            </div>
+            <div id="groupPin">
+              <label for="pincode"><span data-i18n="pinLabel">PIN Code</span> <span class="opt" data-i18n="optTag">(Optional)</span></label>
+              <div class="input-mic-wrap" id="pinWrap">
+                <input type="text" id="pincode" data-speak="pincode" data-i18n-ph="pinPh" placeholder="6-digit PIN" maxlength="6" />
+                <button type="button" class="mic-field-btn" data-target="pincode" data-type="pin" title="Speak PIN Code">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="coord-result-strip" id="coordResultStrip">
+            <div class="coord-result-text">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span id="coordStripValues">LAT: -- | LNG: --</span>
+            </div>
+            <div class="coord-result-actions">
+              <button type="button" class="strip-btn" id="copyCoordsBtn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                <span id="copyCoordsText" data-i18n="copyBtn">Copy</span>
+              </button>
+              <a id="mapVerifyLink" href="#" target="_blank" class="strip-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                <span data-i18n="verifyMap">Map</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="groupAddress">
+        <label for="address"><span data-i18n="addrLabel">Complete Shop Address</span> *</label>
+        <div class="input-mic-wrap" id="addrWrap">
+          <textarea id="address" data-speak="address" data-i18n-ph="addrPh" placeholder="Shop No., Market / Street Name, Landmark, City..."></textarea>
+          <button type="button" class="mic-field-btn" data-target="address" data-type="text" title="Speak Address">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Shop Photo -->
+      <div class="section-head" data-speak="sec4">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span data-i18n="sec4">4. Shop Photograph</span>
+      </div>
+
+      <div class="form-group" id="groupPhoto">
+        <div class="upload-zone" id="uploadZone" data-speak="photo">
+          <input type="file" id="shopPhoto" accept="image/*" />
+          <div class="upload-svg-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div style="font-size:13.5px; font-weight:700;" id="uploadTitle" data-i18n="uploadTitle">
+            Choose Shop Photo *
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin-top:3px;" data-i18n="uploadSub">
+            Upload a clear front view picture of your shop
+          </div>
+          <div id="previewBox">
+            <img id="previewImg" src="" alt="Shop Preview" />
+            <span id="fileNameLabel" style="font-size:12.5px; font-weight:700;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Policy Declaration -->
+      <div id="groupPolicy">
+        <div class="policy-check" id="policyBox" data-speak="policy">
+          <input type="checkbox" id="policyAgree" />
+          <label for="policyAgree" data-i18n="policyText">
+            I declare that all information provided in this form is true and I agree to the merchant terms and policies of Star Shop.
+          </label>
+        </div>
+      </div>
+
+      <div class="error-banner" id="errorBanner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="errorText"></span>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn-submit">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span id="submitBtnText" data-i18n="submitBtn">Submit Application</span>
+      </button>
+    </form>
+
+    <!-- Official Confirmation Slip (Copy & WhatsApp right here!) -->
+    <div id="successScreen">
+      <div class="slip-badge">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2 style="font-size:20px; font-weight:900; text-transform:uppercase; letter-spacing:0.8px;" data-i18n="succTitle">
+        Registration Confirmed
+      </h2>
+      <p style="font-size:13px; color:var(--muted); margin-top:6px;" data-i18n="succSub">
+        Your shop has been registered on Star Shop. Please keep your ID and Password safe.
+      </p>
+
+      <div class="cred-card">
+        <div class="cred-row">
+          <span class="cred-label" data-i18n="outShopLbl">Shop Name</span>
+          <span class="cred-val" id="outShop"></span>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label" data-i18n="outPhoneLbl">Registered Phone</span>
+          <span class="cred-val" id="outPhone"></span>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label" data-i18n="outIdLbl">Star Shop ID</span>
+          <div class="cred-val-wrap">
+            <span class="cred-val" id="outStarId">••••••••••</span>
+            <button type="button" class="mini-icon-btn" id="slipEyeBtn" title="View / Hide ID">
+              <svg id="slipEyeSvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+            <button type="button" class="mini-icon-btn" id="slipCopyBtn" title="Copy ID">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="slipCopyText" data-i18n="copyBtn">Copy</span>
+            </button>
+          </div>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label" data-i18n="outPassLbl">Login Password</span>
+          <div class="cred-val-wrap">
+            <span class="cred-val" id="outPass">••••••••</span>
+            <button type="button" class="mini-icon-btn" id="slipPassEyeBtn" title="View / Hide Password">
+              <svg id="slipPassEyeSvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+            <button type="button" class="mini-icon-btn" id="slipPassCopyBtn" title="Copy Password">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="slipPassCopyText" data-i18n="copyBtn">Copy</span>
+            </button>
+          </div>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label" data-i18n="outCoordsLbl">Saved Coordinates</span>
+          <span class="cred-val" id="outCoords" style="font-size:12px;"></span>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label" data-i18n="outTimeLbl">Business Hours</span>
+          <span class="cred-val" id="outTiming"></span>
+        </div>
+      </div>
+
+      <a id="whatsappBtn" href="#" target="_blank" class="btn-whatsapp">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.766.469 3.484 1.344 5l-1.406 5.156 5.281-1.375c1.469.797 3.109 1.219 4.75 1.219 5.516 0 9.969-4.453 9.969-9.969S17.547 2 12.031 2zm5.813 14.125c-.25.703-1.438 1.344-2 1.422-.531.078-1.203.109-1.938-.125-.453-.141-1.031-.328-1.766-.656-3.094-1.344-5.109-4.469-5.266-4.672-.156-.203-1.266-1.688-1.266-3.219s.797-2.281 1.078-2.594c.281-.313.625-.391.828-.391s.406.016.594.016c.188 0 .438-.078.688.531.25.609.859 2.094.938 2.25.078.156.125.344.016.547-.109.203-.156.344-.313.516-.156.172-.328.391-.469.531-.156.156-.313.328-.141.641.172.313.781 1.297 1.688 2.109 1.156 1.031 2.141 1.359 2.453 1.516.313.156.5.125.688-.078.188-.203.797-.922 1.016-1.234.219-.313.422-.266.703-.156.281.109 1.813.859 2.125 1.016.313.156.516.234.594.359.078.125.078.734-.172 1.438z"/>
+        </svg>
+        <span data-i18n="waBtnFull">Send ID &amp; Password to WhatsApp</span>
+      </a>
+
+      <button class="btn-reset" onclick="location.reload()" data-i18n="newFormBtn">Register Another Shop</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="form-footer">
+      <div><span data-i18n="createdOn">Form Created Date:</span> <strong>14 November 2026</strong></div>
+      <div class="footer-brand">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L14.9 8.6L22 9.3L16.6 14L18.2 21L12 17.3L5.8 21L7.4 14L2 9.3L9.1 8.6L12 2Z"/>
+        </svg>
+        <span data-i18n="issuedBy">Issued &amp; Operated by Star Shop</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================================
+    // SUPABASE CONFIGURATION
+    // ========================================================
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+    const isConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+    const dbClient = isConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+    // ========================================================
+    // 1. BROWSER LANGUAGE AUTO-DETECTION + VOICE DICTIONARY
+    // ========================================================
+    const i18n = {
+      en: {
+        subtitle: 'Merchant Registration & Policy Form',
+        docNote: 'Tap any box to hear guidance, or turn on Voice Mode to speak & fill.',
+        voiceBtn: 'Voice Mode',
+        voiceOnMsg: 'Voice mode is on. Tap any mic icon beside a box to speak and fill.',
+        voiceOffMsg: 'Voice mode turned off.',
+        voiceUnsupported: 'Voice typing is supported in Chrome, Edge, or Android browsers.',
+        sec1: '1. Shop ID, Password & Owner Details',
+        idColLabel: 'Star Shop ID (Type Your Own or Use Auto)',
+        idPh: 'Enter custom ID or click Generate Auto ID',
+        autoIdBtn: 'Generate Auto ID',
+        idHint: 'You can type your own ID or generate one. Copy & WhatsApp options appear on the final slip.',
+        passColLabel: 'Create Your Password (or Use Auto)',
+        passPh: 'Type your own password (or leave blank for Auto)',
+        autoPassBtn: 'Generate Auto Password',
+        passHint: 'Leave blank to auto-generate when you submit.',
+        showBtn: 'View',
+        hideBtn: 'Hide',
+        copyBtn: 'Copy',
+        copiedBtn: 'Copied',
+        phoneLabel: 'Mobile / WhatsApp Number',
+        phonePh: '10-digit mobile number',
+        ownerLabel: 'Owner Full Name',
+        ownerPh: 'e.g. Rajesh Verma',
+        shopLabel: 'Shop Name',
+        shopPh: 'e.g. Verma General Store',
+        catLabel: 'Shop Category',
+        catPh: 'Select or search category...',
+        catSearchPh: 'Search category or type your own...',
+        catCustomPrefix: 'Use Custom Category: ',
+        descLabel: 'Shop Description',
+        optTag: '(Optional)',
+        descPh: 'Write about your shop — products sold, special services, or home delivery...',
+        sec2: '2. Shop Business Hours',
+        openLabel: 'Opening Time',
+        closeLabel: 'Closing Time',
+        daysLabel: 'Open Days',
+        day7: 'All 7 Days (Daily)',
+        day6a: 'Mon - Sat (Sunday Closed)',
+        day6b: 'Tue - Sun (Monday Closed)',
+        sec3: '3. Shop Exact Location & Address',
+        locBtn: 'Get Exact Shop Coordinates',
+        locBtnBusy: 'Fetching Exact Location...',
+        locHint: 'Not captured yet',
+        locVerified: 'Coordinates Visible & Captured',
+        locDenied: 'Location permission denied. Allow GPS in phone/browser settings.',
+        locNoSupport: 'Location is not supported on this device.',
+        latLabel: 'Latitude',
+        lngLabel: 'Longitude',
+        verifyMap: 'Check Pin on Map',
+        pinLabel: 'PIN Code',
+        pinPh: '6-digit PIN',
+        addrLabel: 'Complete Shop Address',
+        addrPh: 'Shop No., Market / Street Name, Landmark, City...',
+        sec4: '4. Shop Photograph',
+        uploadTitle: 'Choose Shop Photo *',
+        uploadDone: 'Shop photo selected',
+        uploadSub: 'Upload a clear front view picture of your shop',
+        policyText: 'I declare that all information provided in this form is true and I agree to the merchant terms and policies of Star Shop.',
+        submitBtn: 'Submit Application',
+        submittingBtn: 'Please wait, submitting details...',
+        fillPrompt: 'Fill this field to continue',
+        fillPhonePrompt: 'Enter valid 10-digit mobile number to continue',
+        fillPinPrompt: 'PIN code must be 6 digits (or leave empty)',
+        fillCoordsPrompt: 'Capture shop coordinates to continue',
+        fillPhotoPrompt: 'Upload shop photo to continue',
+        fillPolicyPrompt: 'Tick agreement checkbox to continue',
+        errIdShort: 'Star Shop ID must be at least 4 characters.',
+        errPassShort: 'Password must be at least 4 characters (or leave blank for Auto).',
+        errMissingForm: 'Please fill the highlighted field(s) to continue.',
+        errIdDup: 'This Star Shop ID is already taken. Please enter another ID or click Generate Auto ID.',
+        errPhoneDup: 'This mobile number is already registered. Please sign in using this number.',
+        errGeneric: 'Something went wrong. Please try again.',
+        succTitle: 'Registration Confirmed',
+        succSub: 'Your shop has been registered on Star Shop. Please keep your ID and Password safe.',
+        outShopLbl: 'Shop Name',
+        outPhoneLbl: 'Registered Phone',
+        outIdLbl: 'Star Shop ID',
+        outPassLbl: 'Login Password',
+        outCoordsLbl: 'Saved Coordinates',
+        outTimeLbl: 'Business Hours',
+        waBtnFull: 'Send ID & Password to WhatsApp',
+        newFormBtn: 'Register Another Shop',
+        createdOn: 'Form Created Date:',
+        issuedBy: 'Issued & Operated by Star Shop'
+      },
+      hi: {
+        subtitle: 'व्यापारिक पंजीकरण एवं नीति आवेदन पत्र',
+        docNote: 'सुनने के लिए किसी भी बॉक्स पर दबाएं, या बोलकर भरने के लिए ऊपर "वॉइस मोड" चालू करें।',
+        voiceBtn: 'बोलकर भरें',
+        voiceOnMsg: 'वॉइस मोड चालू हो गया है। बोलकर भरने के लिए किसी भी बॉक्स के पास दिख रहे माइक पर दबाएं।',
+        voiceOffMsg: 'वॉइस मोड बंद कर दिया गया है।',
+        voiceUnsupported: 'बोलकर लिखने की सुविधा क्रोम, एज या एंड्रॉइड ब्राउज़र में काम करती है।',
+        sec1: '1. दुकान आईडी, पासवर्ड एवं संचालक का विवरण',
+        idColLabel: 'स्टार शॉप आईडी (खुद लिखें या Auto चुनें)',
+        idPh: 'अपनी आईडी लिखें या नीचे से नई बनाएं',
+        autoIdBtn: 'नई ऑटो आईडी बनाएं',
+        idHint: 'आप खुद की आईडी लिख सकते हैं या ऑटो बना सकते हैं। कॉपी और व्हाट्सएप का विकल्प अंतिम रसीद पर मिलेगा।',
+        passColLabel: 'अपना पासवर्ड बनाएं (या Auto चुनें)',
+        passPh: 'अपना पासवर्ड लिखें (या Auto के लिए खाली छोड़ें)',
+        autoPassBtn: 'ऑटो पासवर्ड बनाएं',
+        passHint: 'खाली छोड़ने पर सबमिट करते समय स्वतः पासवर्ड बन जाएगा।',
+        showBtn: 'देखें',
+        hideBtn: 'छुपाएं',
+        copyBtn: 'कॉपी',
+        copiedBtn: 'कॉपी हुई',
+        phoneLabel: 'मोबाइल / व्हाट्सएप नंबर',
+        phonePh: '10 अंकों का मोबाइल नंबर',
+        ownerLabel: 'संचालक का पूरा नाम',
+        ownerPh: 'जैसे: राजेश वर्मा',
+        shopLabel: 'दुकान का नाम',
+        shopPh: 'जैसे: वर्मा जनरल स्टोर',
+        catLabel: 'व्यापार की श्रेणी (कैटेगरी)',
+        catPh: 'श्रेणी चुनें या लिखें...',
+        catSearchPh: 'श्रेणी खोजें या अपनी नई लिखें...',
+        catCustomPrefix: 'यह श्रेणी जोड़ें: ',
+        descLabel: 'दुकान का विवरण',
+        optTag: '(वैकल्पिक)',
+        descPh: 'अपनी दुकान के बारे में लिखें — क्या सामान मिलता है, खास सुविधा या होम डिलीवरी...',
+        sec2: '2. दुकान खुलने का समय',
+        openLabel: 'खुलने का समय',
+        closeLabel: 'बंद होने का समय',
+        daysLabel: 'दुकान किन दिनों खुलेगी',
+        day7: 'रोजाना (सभी 7 दिन)',
+        day6a: 'सोमवार से शनिवार (रविवार बंद)',
+        day6b: 'मंगलवार से रविवार (सोमवार बंद)',
+        sec3: '3. दुकान की सटीक लोकेशन (Coordinates) एवं पता',
+        locBtn: 'सटीक लोकेशन (Coordinates) प्राप्त करें',
+        locBtnBusy: 'सटीक लोकेशन निकाली जा रही है...',
+        locHint: 'अभी सेट नहीं है',
+        locVerified: 'लोकेशन (Coordinates) प्राप्त हो गई',
+        locDenied: 'लोकेशन की अनुमति बंद है। कृपया फोन/ब्राउज़र में लोकेशन चालू करें।',
+        locNoSupport: 'इस डिवाइस पर लोकेशन सुविधा उपलब्ध नहीं है।',
+        latLabel: 'अक्षांश (Latitude)',
+        lngLabel: 'देशांतर (Longitude)',
+        verifyMap: 'नक्शे पर पिन देखें',
+        pinLabel: 'पिन कोड',
+        pinPh: '6 अंकों का पिन',
+        addrLabel: 'दुकान का पूरा पता',
+        addrPh: 'दुकान नंबर, बाजार / गली का नाम, पास की पहचान, शहर...',
+        sec4: '4. दुकान की तस्वीर',
+        uploadTitle: 'दुकान की फोटो चुनें *',
+        uploadDone: 'फोटो चुन ली गई है',
+        uploadSub: 'बाहर से दुकान की साफ तस्वीर लगाएं',
+        policyText: 'मैं यह घोषणा करता हूँ कि इस आवेदन पत्र में दी गई सभी जानकारी सत्य है और मैं स्टार शॉप के व्यापारिक नियमों व नीति से सहमत हूँ।',
+        submitBtn: 'आवेदन जमा करें',
+        submittingBtn: 'कृपया प्रतीक्षा करें, जानकारी दर्ज हो रही है...',
+        fillPrompt: 'इसे भरें और आगे बढ़ें',
+        fillPhonePrompt: 'आगे बढ़ने के लिए सही 10 अंकों का मोबाइल नंबर भरें',
+        fillPinPrompt: 'पिन कोड 6 अंकों का होना चाहिए (या खाली छोड़ें)',
+        fillCoordsPrompt: 'आगे बढ़ने के लिए सटीक लोकेशन (Coordinates) प्राप्त करें',
+        fillPhotoPrompt: 'आगे बढ़ने के लिए दुकान की फोटो चुनें',
+        fillPolicyPrompt: 'आगे बढ़ने के लिए नियम बॉक्स पर टिक करें',
+        errIdShort: 'स्टार शॉप आईडी कम से कम 4 अक्षरों की होनी चाहिए।',
+        errPassShort: 'पासवर्ड कम से कम 4 अक्षरों का होना चाहिए (या Auto के लिए खाली छोड़ें)।',
+        errMissingForm: 'कृपया हाइलाइट किए गए कॉलम भरें और आगे बढ़ें।',
+        errIdDup: 'यह स्टार शॉप आईडी पहले से किसी ने ली हुई है। कृपया दूसरी आईडी लिखें या नई ऑटो आईडी बनाएं।',
+        errPhoneDup: 'यह मोबाइल नंबर पहले से दर्ज है। कृपया इसी नंबर से प्रवेश करें।',
+        errGeneric: 'कुछ समस्या आई है, कृपया दोबारा प्रयास करें।',
+        succTitle: 'पंजीकरण स्वीकृत',
+        succSub: 'आपकी दुकान स्टार शॉप पर सफलतापूर्वक दर्ज हो चुकी है। अपनी आईडी और पासवर्ड सुरक्षित रखें।',
+        outShopLbl: 'दुकान का नाम',
+        outPhoneLbl: 'दर्ज मोबाइल नंबर',
+        outIdLbl: 'स्टार शॉप आईडी',
+        outPassLbl: 'लॉगिन पासवर्ड',
+        outCoordsLbl: 'दर्ज लोकेशन (Coordinates)',
+        outTimeLbl: 'दुकान का समय',
+        waBtnFull: 'व्हाट्सएप पर आईडी और पासवर्ड भेजें',
+        newFormBtn: 'नया आवेदन भरें',
+        createdOn: 'फॉर्म निर्माण तिथि:',
+        issuedBy: 'स्टार शॉप द्वारा जारी एवं संचालित'
+      }
+    };
+
+    const speakPrompts = {
+      en: {
+        sec1: 'Section 1. Shop ID, password, and owner details.',
+        starId: 'Here you can type your own Star Shop ID or click Generate Auto ID below.',
+        password: 'Create your own password here, or click Generate Auto Password below.',
+        phone: 'Enter your 10 digit mobile or WhatsApp number.',
+        owner: 'Enter the shop owner full name.',
+        shop: 'Enter the name of your shop.',
+        category: 'Choose your shop category.',
+        description: 'Write a short description about what your shop sells or offers. This is optional.',
+        sec2: 'Section 2. Shop opening and closing hours.',
+        openTime: 'Select the time your shop opens.',
+        closeTime: 'Select the time your shop closes.',
+        openDays: 'Select which days of the week your shop stays open.',
+        sec3: 'Section 3. Shop exact location and complete address.',
+        fetchLoc: 'Press this button while standing at your shop to capture your exact coordinates.',
+        pincode: 'Enter your 6 digit area PIN code if you know it. This is optional.',
+        address: 'Enter your complete shop address, street, landmark, and city.',
+        sec4: 'Section 4. Upload a clear front photo of your shop.',
+        photo: 'Tap here to choose a clear front view photograph of your shop.',
+        policy: 'Tick this box to confirm your details and agree to Star Shop merchant terms.'
+      },
+      hi: {
+        sec1: 'भाग 1. दुकान की आईडी, पासवर्ड और संचालक का विवरण।',
+        starId: 'यहाँ आप अपनी खुद की स्टार शॉप आईडी लिख सकते हैं या नीचे से नई ऑटो आईडी बना सकते हैं।',
+        password: 'यहाँ अपना मनचाहा पासवर्ड लिखें, या नीचे से ऑटो पासवर्ड बनाएं।',
+        phone: 'यहाँ अपना 10 अंकों का मोबाइल या व्हाट्सएप नंबर डालें।',
+        owner: 'यहाँ दुकान के मालिक का पूरा नाम भरें।',
+        shop: 'यहाँ अपनी दुकान का नाम लिखें।',
+        category: 'यहाँ अपनी दुकान की श्रेणी चुनें।',
+        description: 'अपनी दुकान के बारे में थोड़ा लिखें कि यहाँ क्या सामान मिलता है। यह वैकल्पिक है।',
+        sec2: 'भाग 2. दुकान खुलने और बंद होने का समय।',
+        openTime: 'चुनें कि आपकी दुकान सुबह कितने बजे खुलती है।',
+        closeTime: 'चुनें कि आपकी दुकान शाम को कितने बजे बंद होती है।',
+        openDays: 'चुनें कि आपकी दुकान हफ्ते में किन दिनों खुली रहेगी।',
+        sec3: 'भाग 3. दुकान की सटीक लोकेशन और पूरा पता।',
+        fetchLoc: 'अपनी दुकान पर खड़े होकर यह बटन दबाएं, ताकि आपकी सटीक लोकेशन दर्ज हो सके।',
+        pincode: 'अगर आपको अपने इलाके का 6 अंकों का पिन कोड पता है तो यहाँ डालें, यह वैकल्पिक है।',
+        address: 'यहाँ अपनी दुकान का पूरा पता, गली, पास की पहचान और शहर लिखें।',
+        sec4: 'भाग 4. अपनी दुकान की फोटो अपलोड करें।',
+        photo: 'यहाँ दबाकर अपनी दुकान की बाहर से एक साफ तस्वीर चुनें।',
+        policy: 'अपनी जानकारी की पुष्टि करने और स्टार शॉप के नियमों को मानने के लिए इस बॉक्स पर टिक करें।'
+      }
+    };
+
+    const browserLang = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+    const currentLang = browserLang.toLowerCase().startsWith('hi') ? 'hi' : 'en';
+    const speechLocale = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+
+    function applyBrowserLanguage() {
+      const dict = i18n[currentLang];
+      document.documentElement.lang = currentLang;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (dict[key]) el.placeholder = dict[key];
+      });
+    }
+
+    // ========================================================
+    // 2. AUTO VOICE GUIDANCE ON SECTION / FIELD CLICK
+    // ========================================================
+    let cachedVoices = [];
+    if ('speechSynthesis' in window) {
+      cachedVoices = window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        cachedVoices = window.speechSynthesis.getVoices();
+      };
+    }
+
+    function speakText(text) {
+      if (!('speechSynthesis' in window) || !text) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = speechLocale;
+        utter.rate = 0.98;
+        const targetPrefix = currentLang === 'hi' ? 'hi' : 'en';
+        const matchedVoice = cachedVoices.find(v => v.lang.toLowerCase().startsWith(targetPrefix));
+        if (matchedVoice) utter.voice = matchedVoice;
+        window.speechSynthesis.speak(utter);
+      } catch (_) {}
+    }
+
+    let lastSpokenKey = '';
+    let lastSpokenTime = 0;
+
+    document.querySelectorAll('[data-speak]').forEach(el => {
+      const handler = (e) => {
+        if (e.target.closest('.mic-field-btn') || e.target.closest('.id-eye-btn')) return;
+        const key = el.getAttribute('data-speak');
+        const now = Date.now();
+        if (key === lastSpokenKey && now - lastSpokenTime < 1200) return;
+        lastSpokenKey = key;
+        lastSpokenTime = now;
+        const text = speakPrompts[currentLang][key];
+        if (text) speakText(text);
+      };
+      el.addEventListener('click', handler);
+      el.addEventListener('focus', handler);
+    });
+
+    // ========================================================
+    // 3. SMART VOICE MODE TOGGLE + DIRECT VOICE FILL
+    // ========================================================
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const voiceModeToggle = document.getElementById('voiceModeToggle');
+    let activeRecognition = null;
+    let activeMicBtn = null;
+
+    voiceModeToggle.addEventListener('click', () => {
+      if (!SpeechRec) {
+        showError(i18n[currentLang].voiceUnsupported);
+        return;
+      }
+      const isOn = document.body.classList.toggle('voice-mode-on');
+      voiceModeToggle.classList.toggle('active', isOn);
+
+      if (isOn) {
+        speakText(i18n[currentLang].voiceOnMsg);
+      } else {
+        if (activeRecognition) {
+          try { activeRecognition.stop(); } catch (_) {}
+        }
+        if (activeMicBtn) activeMicBtn.classList.remove('listening');
+        speakText(i18n[currentLang].voiceOffMsg);
+      }
+    });
+
+    document.querySelectorAll('.mic-field-btn').forEach(micBtn => {
+      micBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!SpeechRec) {
+          showError(i18n[currentLang].voiceUnsupported);
+          return;
         }
 
-        function clearConsole() {
-            document.getElementById('consoleLogContentinnerHTML').innerHTML = 'Console cleared.';
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        if (activeRecognition) {
+          try { activeRecognition.stop(); } catch (_) {}
         }
+        if (activeMicBtn) activeMicBtn.classList.remove('listening');
 
-        // Global error catcher
-        window.onerror = function(msg, url, line) {
-            logError(`JS Error: ${msg} (Line: ${line})`);
+        const recognition = new SpeechRec();
+        recognition.lang = speechLocale;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        activeRecognition = recognition;
+        activeMicBtn = micBtn;
+        micBtn.classList.add('listening');
+
+        const targetId = micBtn.getAttribute('data-target');
+        const fieldType = micBtn.getAttribute('data-type');
+
+        recognition.onresult = (event) => {
+          const spoken = (event.results[0][0].transcript || '').trim();
+          if (!spoken) return;
+
+          if (fieldType === 'phone') {
+            const digits = spoken.replace(/\D/g, '').slice(-10);
+            const el = document.getElementById(targetId);
+            el.value = digits || spoken;
+            clearMissing(document.getElementById('phoneWrap'), document.getElementById('groupPhone'));
+          } else if (fieldType === 'pin') {
+            const digits = spoken.replace(/\D/g, '').slice(0, 6);
+            const el = document.getElementById(targetId);
+            el.value = digits || spoken;
+            clearMissing(document.getElementById('pinWrap'), document.getElementById('groupPin'));
+          } else if (fieldType === 'id') {
+            const cleaned = spoken.replace(/\s+/g, '-').toUpperCase();
+            const el = document.getElementById(targetId);
+            el.value = cleaned;
+            clearMissing(document.getElementById('starIdGroup'), document.getElementById('groupStarId'));
+          } else if (fieldType === 'category') {
+            selectCategory(spoken);
+          } else {
+            const el = document.getElementById(targetId);
+            el.value = spoken;
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+          }
         };
 
-        document.getElementById('globalRegForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const statusBox = document.getElementById('statusBox');
-            
-            statusBox.className = 'status-box';
-            statusBox.style.display = 'none';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
+        recognition.onerror = () => micBtn.classList.remove('listening');
+        recognition.onend = () => {
+          micBtn.classList.remove('listening');
+          activeRecognition = null;
+          activeMicBtn = null;
+        };
 
-            const generatedUuid = crypto.randomUUID();
-            const rawPhone = document.getElementById('phone').value.trim();
-            const fullPhone = '91' + rawPhone;
-            const shopNameVal = document.getElementById('shopName').value.trim();
-            const ownerNameVal = document.getElementById('ownerName').value.trim();
-            const catVal = document.getElementById('category').value.trim();
-            const customPinVal = document.getElementById('customPin').value.trim();
-            const addressVal = document.getElementById('address').value.trim();
+        recognition.start();
+      });
+    });
 
-            const merchantPayload = {
-                id: generatedUuid,
-                shop_name: shopNameVal,
-                owner_name: ownerNameVal,
-                category: catVal,
-                phone: fullPhone,
-                pin: customPinVal,
-                address: addressVal,
-                is_open_today: true
-            };
+    // ========================================================
+    // 4. SMALL CIRCULAR LIGHTING TOGGLE (WHITE / NATURAL BLACK)
+    // ========================================================
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
 
-            try {
-                logError(`Attempting insert for: ${shopNameVal}`);
-                const { data, error } = await supabaseClient
-                    .from('merchants')
-                    .insert([merchantPayload]);
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        themeToggle.classList.remove('active');
+        themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeToggle.classList.add('active');
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      }
+    });
 
-                if (error) {
-                    logError(`Supabase Error Code: ${error.code} - ${error.message}`);
-                    throw error;
-                }
+    // ========================================================
+    // 5. AUTO HIGHLIGHT HELPER FOR MISSED FIELDS
+    // ========================================================
+    const arrowRightSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 
-                statusBox.className = 'status-box success';
-                statusBox.innerHTML = `
-                    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #ffffff;">✨ Registered Successfully! ✨</h2>
-                    <p style="color: #8b9bb4;">Store data saved to Supabase.</p>
-                    <code style="color:#34d399;">UUID: ${generatedUuid}</code>
-                `;
-                
-                document.getElementById('globalRegForm').reset();
-            } catch (err) {
-                statusBox.className = 'status-box error';
-                statusBox.textContent = 'Database Error: ' + err.message;
-                logError(`Catch Exception: ${err.message}`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Register Store 🚀';
-            }
+    function markMissing(targetEl, containerEl, message) {
+      targetEl.classList.add('field-missing');
+      const existing = containerEl.querySelector('.field-warn-tag');
+      if (existing) existing.remove();
+      const tag = document.createElement('div');
+      tag.className = 'field-warn-tag';
+      tag.innerHTML = `${arrowRightSvg} <span>${message}</span>`;
+      containerEl.appendChild(tag);
+    }
+
+    function clearMissing(targetEl, containerEl) {
+      targetEl.classList.remove('field-missing');
+      const existing = containerEl.querySelector('.field-warn-tag');
+      if (existing) existing.remove();
+    }
+
+    // ========================================================
+    // 6. CLEAN CUSTOM OR AUTO ID & PASSWORD CONTROLS
+    // ========================================================
+    function generateStarId() {
+      return 'STAR-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    function generatePassword() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let pass = 'ST#';
+      for (let i = 0; i < 6; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      return pass;
+    }
+
+    const starIdInput = document.getElementById('starIdInput');
+    const userPassInput = document.getElementById('userPassInput');
+    starIdInput.value = generateStarId();
+
+    let idVisible = false;
+    let passVisible = false;
+    let slipIdVisible = false;
+    let slipPassVisible = false;
+
+    const eyeOpenSvg = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    const eyeClosedSvg = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+
+    starIdInput.addEventListener('input', () => clearMissing(document.getElementById('starIdGroup'), document.getElementById('groupStarId')));
+    userPassInput.addEventListener('input', () => clearMissing(document.getElementById('userPassGroup'), document.getElementById('groupPass')));
+
+    document.getElementById('autoIdBtn').addEventListener('click', () => {
+      starIdInput.value = generateStarId();
+      clearMissing(document.getElementById('starIdGroup'), document.getElementById('groupStarId'));
+    });
+
+    document.getElementById('toggleIdEyeBtn').addEventListener('click', () => {
+      idVisible = !idVisible;
+      starIdInput.type = idVisible ? 'text' : 'password';
+      document.getElementById('idEyeSvg').innerHTML = idVisible ? eyeOpenSvg : eyeClosedSvg;
+      document.getElementById('idEyeText').textContent = idVisible ? i18n[currentLang].hideBtn : i18n[currentLang].showBtn;
+    });
+
+    document.getElementById('autoPassBtn').addEventListener('click', () => {
+      userPassInput.value = generatePassword();
+      clearMissing(document.getElementById('userPassGroup'), document.getElementById('groupPass'));
+    });
+
+    document.getElementById('togglePassEyeBtn').addEventListener('click', () => {
+      passVisible = !passVisible;
+      userPassInput.type = passVisible ? 'text' : 'password';
+      document.getElementById('passEyeSvg').innerHTML = passVisible ? eyeOpenSvg : eyeClosedSvg;
+      document.getElementById('passEyeText').textContent = passVisible ? i18n[currentLang].hideBtn : i18n[currentLang].showBtn;
+    });
+
+    const descInput = document.getElementById('shopDescription');
+    const descCount = document.getElementById('descCount');
+    descInput.addEventListener('input', () => {
+      descCount.textContent = `${descInput.value.length} / 300`;
+    });
+
+    // ========================================================
+    // 7. SEARCHABLE + CUSTOM CATEGORY PICKER
+    // ========================================================
+    const svgIcons = {
+      cart: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+      phone: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+      shirt: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>',
+      medical: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+      food: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+      tool: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+      scissors: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>',
+      book: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+      gem: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/></svg>',
+      car: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+      tag: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'
+    };
+
+    const categories = [
+      { name: 'Kirana & Grocery', icon: 'cart' },
+      { name: 'Electronics & Mobile', icon: 'phone' },
+      { name: 'Fashion & Clothing', icon: 'shirt' },
+      { name: 'Pharmacy & Medical Store', icon: 'medical' },
+      { name: 'Restaurant, Cafe & Fast Food', icon: 'food' },
+      { name: 'Bakery, Sweets & Dairy', icon: 'food' },
+      { name: 'Hardware, Paints & Electrical', icon: 'tool' },
+      { name: 'Salon, Parlour & Grooming', icon: 'scissors' },
+      { name: 'Stationery, Books & Gift Shop', icon: 'book' },
+      { name: 'Jewellery & Watches', icon: 'gem' },
+      { name: 'Footwear & Bags', icon: 'tag' },
+      { name: 'Automobile & Spare Parts', icon: 'car' },
+      { name: 'Furniture & Home Decor', icon: 'tag' },
+      { name: 'Fruits & Vegetables', icon: 'cart' },
+      { name: 'Mobile & Laptop Repair', icon: 'tool' },
+      { name: 'Tailoring & Boutique', icon: 'scissors' }
+    ];
+
+    const catTriggerRow = document.getElementById('catTriggerRow');
+    const catTrigger = document.getElementById('catTrigger');
+    const catPanel = document.getElementById('catPanel');
+    const catSearchInput = document.getElementById('catSearchInput');
+    const catItemsContainer = document.getElementById('catItemsContainer');
+    const catCustomBtn = document.getElementById('catCustomBtn');
+    const catCustomLabel = document.getElementById('catCustomLabel');
+    const catValueInput = document.getElementById('categoryValue');
+    const catDisplayText = document.getElementById('catDisplayText');
+    const catWrapper = document.getElementById('categoryWrapper');
+
+    function renderCategories(filter = '') {
+      const q = filter.trim().toLowerCase();
+      const filtered = categories.filter(c => c.name.toLowerCase().includes(q));
+
+      catItemsContainer.innerHTML = '';
+      filtered.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = 'cat-item';
+        div.innerHTML = `<div class="cat-item-icon">${svgIcons[cat.icon]}</div><span>${cat.name}</span>`;
+        div.onclick = () => selectCategory(cat.name);
+        catItemsContainer.appendChild(div);
+      });
+
+      const exactMatch = categories.some(c => c.name.toLowerCase() === q);
+      if (q.length > 0 && !exactMatch) {
+        catCustomBtn.style.display = 'flex';
+        catCustomLabel.textContent = `${i18n[currentLang].catCustomPrefix}"${filter.trim()}"`;
+        catCustomBtn.onclick = () => selectCategory(filter.trim());
+      } else {
+        catCustomBtn.style.display = 'none';
+      }
+    }
+
+    function selectCategory(name) {
+      catValueInput.value = name;
+      catDisplayText.textContent = name;
+      catDisplayText.classList.remove('cat-placeholder');
+      catPanel.classList.remove('open');
+      catTriggerRow.classList.remove('active');
+      clearMissing(catTriggerRow, catWrapper);
+    }
+
+    catTrigger.addEventListener('click', () => {
+      const isOpen = catPanel.classList.toggle('open');
+      catTriggerRow.classList.toggle('active', isOpen);
+      if (isOpen) {
+        renderCategories(catSearchInput.value);
+        setTimeout(() => catSearchInput.focus(), 50);
+      }
+    });
+
+    catSearchInput.addEventListener('input', (e) => renderCategories(e.target.value));
+
+    document.addEventListener('click', (e) => {
+      if (!catWrapper.contains(e.target)) {
+        catPanel.classList.remove('open');
+        catTriggerRow.classList.remove('active');
+      }
+    });
+
+    // ========================================================
+    // 8. DEDICATED COORDINATES FETCH BUTTON
+    // ========================================================
+    let shopLat = null;
+    let shopLng = null;
+
+    const fetchLocBtn = document.getElementById('fetchLocBtn');
+    const fetchBtnIcon = document.getElementById('fetchBtnIcon');
+    const fetchBtnLabel = document.getElementById('fetchBtnLabel');
+    const locStatus = document.getElementById('locStatus');
+    const latField = document.getElementById('latField');
+    const lngField = document.getElementById('lngField');
+    const coordCard = document.getElementById('coordCard');
+    const groupCoords = document.getElementById('groupCoords');
+    const coordResultStrip = document.getElementById('coordResultStrip');
+    const coordStripValues = document.getElementById('coordStripValues');
+    const mapVerifyLink = document.getElementById('mapVerifyLink');
+
+    const crosshairSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="9"/></svg>';
+    const spinnerSvg = '<svg class="spin-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+
+    function getGeoPromise(highAccuracy) {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: highAccuracy,
+          timeout: 8000,
+          maximumAge: highAccuracy ? 0 : 30000
         });
-    </script>
+      });
+    }
+
+    async function fetchExactCoordinates() {
+      const dict = i18n[currentLang];
+      document.getElementById('errorBanner').style.display = 'none';
+      clearMissing(coordCard, groupCoords);
+
+      if (!navigator.geolocation) {
+        document.getElementById('locStatusText').textContent = dict.locNoSupport;
+        markMissing(coordCard, groupCoords, dict.locNoSupport);
+        return false;
+      }
+
+      fetchLocBtn.disabled = true;
+      fetchBtnIcon.innerHTML = spinnerSvg;
+      fetchBtnLabel.textContent = dict.locBtnBusy;
+      document.getElementById('locStatusText').textContent = dict.locBtnBusy;
+
+      try {
+        let pos;
+        try {
+          pos = await getGeoPromise(true);
+        } catch (err) {
+          if (err.code === 1) throw err;
+          pos = await getGeoPromise(false);
+        }
+
+        shopLat = parseFloat(pos.coords.latitude.toFixed(6));
+        shopLng = parseFloat(pos.coords.longitude.toFixed(6));
+
+        latField.value = shopLat;
+        lngField.value = shopLng;
+        latField.classList.add('filled');
+        lngField.classList.add('filled');
+
+        coordStripValues.textContent = `LAT: ${shopLat}  |  LNG: ${shopLng}`;
+        mapVerifyLink.href = `https://www.google.com/maps?q=${shopLat},${shopLng}`;
+        coordResultStrip.style.display = 'flex';
+
+        locStatus.className = 'coord-status-badge ok';
+        locStatus.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span id="locStatusText">${dict.locVerified}</span>`;
+
+        fetchLocBtn.disabled = false;
+        fetchBtnIcon.innerHTML = crosshairSvg;
+        fetchBtnLabel.textContent = dict.locBtn;
+        return true;
+
+      } catch (err) {
+        locStatus.className = 'coord-status-badge';
+        document.getElementById('locStatusText').textContent = dict.locDenied;
+        markMissing(coordCard, groupCoords, dict.locDenied);
+
+        fetchLocBtn.disabled = false;
+        fetchBtnIcon.innerHTML = crosshairSvg;
+        fetchBtnLabel.textContent = dict.locBtn;
+        return false;
+      }
+    }
+
+    fetchLocBtn.addEventListener('click', fetchExactCoordinates);
+
+    document.getElementById('copyCoordsBtn').addEventListener('click', async () => {
+      if (shopLat === null || shopLng === null) return;
+      try {
+        await navigator.clipboard.writeText(`${shopLat}, ${shopLng}`);
+        const txt = document.getElementById('copyCoordsText');
+        txt.textContent = i18n[currentLang].copiedBtn;
+        setTimeout(() => { txt.textContent = i18n[currentLang].copyBtn; }, 1500);
+      } catch (_) {}
+    });
+
+    // ========================================================
+    // 9. AUTO-HIGHLIGHT CLEAR ON INPUT + BLUR CHECK
+    // ========================================================
+    const phoneInput = document.getElementById('phone');
+    const ownerInput = document.getElementById('ownerName');
+    const shopInput = document.getElementById('shopName');
+    const pinInput = document.getElementById('pincode');
+    const addrInput = document.getElementById('address');
+    const photoInput = document.getElementById('shopPhoto');
+    const policyInput = document.getElementById('policyAgree');
+
+    const phoneWrap = document.getElementById('phoneWrap');
+    const ownerWrap = document.getElementById('ownerWrap');
+    const shopWrap = document.getElementById('shopWrap');
+    const pinWrap = document.getElementById('pinWrap');
+    const addrWrap = document.getElementById('addrWrap');
+
+    phoneInput.addEventListener('input', () => clearMissing(phoneWrap, document.getElementById('groupPhone')));
+    ownerInput.addEventListener('input', () => clearMissing(ownerWrap, document.getElementById('groupOwner')));
+    shopInput.addEventListener('input', () => clearMissing(shopWrap, document.getElementById('groupShop')));
+    pinInput.addEventListener('input', () => clearMissing(pinWrap, document.getElementById('groupPin')));
+    addrInput.addEventListener('input', () => clearMissing(addrWrap, document.getElementById('groupAddress')));
+    policyInput.addEventListener('change', () => clearMissing(document.getElementById('policyBox'), document.getElementById('groupPolicy')));
+
+    phoneInput.addEventListener('blur', () => {
+      if (!/^[6-9][0-9]{9}$/.test(phoneInput.value.trim())) {
+        markMissing(phoneWrap, document.getElementById('groupPhone'), i18n[currentLang].fillPhonePrompt);
+      }
+    });
+    ownerInput.addEventListener('blur', () => {
+      if (!ownerInput.value.trim()) markMissing(ownerWrap, document.getElementById('groupOwner'), i18n[currentLang].fillPrompt);
+    });
+    shopInput.addEventListener('blur', () => {
+      if (!shopInput.value.trim()) markMissing(shopWrap, document.getElementById('groupShop'), i18n[currentLang].fillPrompt);
+    });
+    addrInput.addEventListener('blur', () => {
+      if (!addrInput.value.trim()) markMissing(addrWrap, document.getElementById('groupAddress'), i18n[currentLang].fillPrompt);
+    });
+
+    photoInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        clearMissing(document.getElementById('uploadZone'), document.getElementById('groupPhoto'));
+        document.getElementById('uploadTitle').textContent = i18n[currentLang].uploadDone;
+        document.getElementById('fileNameLabel').textContent = file.name;
+        document.getElementById('previewBox').style.display = 'flex';
+        const reader = new FileReader();
+        reader.onload = (e) => document.getElementById('previewImg').src = e.target.result;
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function formatTime(t) {
+      let [h, m] = t.split(':');
+      h = parseInt(h);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${h}:${m} ${ampm}`;
+    }
+
+    function showError(msg) {
+      document.getElementById('errorText').textContent = msg;
+      document.getElementById('errorBanner').style.display = 'flex';
+    }
+
+    applyBrowserLanguage();
+
+    // ========================================================
+    // 10. FORM SUBMIT -> EXACT SUPABASE MERCHANTS INSERT
+    // ========================================================
+    document.getElementById('starShopForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      document.getElementById('errorBanner').style.display = 'none';
+      const dict = i18n[currentLang];
+
+      document.querySelectorAll('.field-missing').forEach(el => el.classList.remove('field-missing'));
+      document.querySelectorAll('.field-warn-tag').forEach(el => el.remove());
+
+      let firstMissedEl = null;
+      let missingCount = 0;
+
+      function flagMissing(target, container, msg, focusEl) {
+        markMissing(target, container, msg);
+        missingCount++;
+        if (!firstMissedEl) firstMissedEl = focusEl || target;
+      }
+
+      const finalStarId = starIdInput.value.trim();
+      if (finalStarId.length < 4) {
+        flagMissing(document.getElementById('starIdGroup'), document.getElementById('groupStarId'), dict.errIdShort, starIdInput);
+      }
+
+      let finalPassword = userPassInput.value.trim();
+      if (finalPassword.length > 0 && finalPassword.length < 4) {
+        flagMissing(document.getElementById('userPassGroup'), document.getElementById('groupPass'), dict.errPassShort, userPassInput);
+      }
+
+      const phone = phoneInput.value.trim();
+      if (!/^[6-9][0-9]{9}$/.test(phone)) {
+        flagMissing(phoneWrap, document.getElementById('groupPhone'), dict.fillPhonePrompt, phoneInput);
+      }
+
+      const ownerName = ownerInput.value.trim();
+      if (!ownerName) {
+        flagMissing(ownerWrap, document.getElementById('groupOwner'), dict.fillPrompt, ownerInput);
+      }
+
+      const shopName = shopInput.value.trim();
+      if (!shopName) {
+        flagMissing(shopWrap, document.getElementById('groupShop'), dict.fillPrompt, shopInput);
+      }
+
+      const category = catValueInput.value.trim();
+      if (!category) {
+        flagMissing(catTriggerRow, catWrapper, dict.fillPrompt, catTrigger);
+      }
+
+      const pincode = pinInput.value.trim();
+      if (pincode && !/^[0-9]{6}$/.test(pincode)) {
+        flagMissing(pinWrap, document.getElementById('groupPin'), dict.fillPinPrompt, pinInput);
+      }
+
+      const address = addrInput.value.trim();
+      if (!address) {
+        flagMissing(addrWrap, document.getElementById('groupAddress'), dict.fillPrompt, addrInput);
+      }
+
+      const file = photoInput.files[0];
+      if (!file) {
+        flagMissing(document.getElementById('uploadZone'), document.getElementById('groupPhoto'), dict.fillPhotoPrompt, document.getElementById('uploadZone'));
+      }
+
+      if (!policyInput.checked) {
+        flagMissing(document.getElementById('policyBox'), document.getElementById('groupPolicy'), dict.fillPolicyPrompt, policyInput);
+      }
+
+      if (missingCount > 0) {
+        showError(dict.errMissingForm);
+        speakText(dict.errMissingForm);
+        firstMissedEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (typeof firstMissedEl.focus === 'function') firstMissedEl.focus({ preventScroll: true });
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('submitBtnText');
+      btn.disabled = true;
+      btnText.textContent = dict.submittingBtn;
+
+      if (shopLat === null || shopLng === null) {
+        const ok = await fetchExactCoordinates();
+        if (!ok) {
+          markMissing(coordCard, groupCoords, dict.fillCoordsPrompt);
+          coordCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          btn.disabled = false;
+          btnText.textContent = dict.submitBtn;
+          return;
+        }
+      }
+
+      if (!finalPassword) {
+        finalPassword = generatePassword();
+      }
+
+      const description = descInput.value.trim() || null;
+      const openTime = formatTime(document.getElementById('openTime').value);
+      const closeTime = formatTime(document.getElementById('closeTime').value);
+      const openDays = document.getElementById('openDays').value;
+      const internalId = crypto.randomUUID();
+
+      try {
+        if (dbClient) {
+          const { data: existingPhone, error: phoneErr } = await dbClient
+            .from('merchants')
+            .select('id')
+            .eq('phone', phone)
+            .maybeSingle();
+
+          if (phoneErr) throw new Error(dict.errGeneric);
+          if (existingPhone) {
+            markMissing(phoneWrap, document.getElementById('groupPhone'), dict.errPhoneDup);
+            phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            throw new Error(dict.errPhoneDup);
+          }
+
+          const { data: existingId, error: idErr } = await dbClient
+            .from('merchants')
+            .select('id')
+            .eq('star_shop_id', finalStarId)
+            .maybeSingle();
+
+          if (idErr) throw new Error(dict.errGeneric);
+          if (existingId) {
+            markMissing(document.getElementById('starIdGroup'), document.getElementById('groupStarId'), dict.errIdDup);
+            starIdInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            throw new Error(dict.errIdDup);
+          }
+
+          let imageUrl = '';
+          if (file) {
+            const ext = file.name.split('.').pop();
+            const path = `${internalId}.${ext}`;
+            const { error: upErr } = await dbClient.storage.from('shop-images').upload(path, file);
+            if (upErr) throw new Error(dict.errGeneric);
+            const { data: pubData } = dbClient.storage.from('shop-images').getPublicUrl(path);
+            imageUrl = pubData.publicUrl;
+          }
+
+          const { error: merchErr } = await dbClient
+            .from('merchants')
+            .insert([{
+              id: internalId,
+              star_shop_id: finalStarId,
+              phone: phone,
+              shop_name: shopName,
+              owner_name: ownerName,
+              category: category,
+              description: description,
+              open_time: openTime,
+              close_time: closeTime,
+              open_days: openDays,
+              address: address,
+              pincode: pincode || null,
+              latitude: shopLat,
+              longitude: shopLng,
+              profile_image_url: imageUrl,
+              is_open_today: true
+            }]);
+
+          if (merchErr) throw new Error(dict.errGeneric);
+
+          const { error: credErr } = await dbClient
+            .from('merchant_credentials')
+            .insert([{
+              merchant_id: internalId,
+              master_pass_fragment: finalPassword
+            }]);
+
+          if (credErr) throw new Error(dict.errGeneric);
+        }
+
+        const timingText = `${openTime} - ${closeTime} (${openDays})`;
+        document.getElementById('outShop').textContent = shopName;
+        document.getElementById('outPhone').textContent = phone;
+        document.getElementById('outCoords').textContent = `${shopLat}, ${shopLng}`;
+        document.getElementById('outTiming').textContent = timingText;
+
+        const outStarIdEl = document.getElementById('outStarId');
+        document.getElementById('slipEyeBtn').onclick = () => {
+          slipIdVisible = !slipIdVisible;
+          outStarIdEl.textContent = slipIdVisible ? finalStarId : '••••••••••';
+          document.getElementById('slipEyeSvg').innerHTML = slipIdVisible ? eyeOpenSvg : eyeClosedSvg;
+        };
+        document.getElementById('slipCopyBtn').onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(finalStarId);
+            const txt = document.getElementById('slipCopyText');
+            txt.textContent = dict.copiedBtn;
+            setTimeout(() => { txt.textContent = dict.copyBtn; }, 1600);
+          } catch (_) {}
+        };
+
+        const outPassEl = document.getElementById('outPass');
+        document.getElementById('slipPassEyeBtn').onclick = () => {
+          slipPassVisible = !slipPassVisible;
+          outPassEl.textContent = slipPassVisible ? finalPassword : '••••••••';
+          document.getElementById('slipPassEyeSvg').innerHTML = slipPassVisible ? eyeOpenSvg : eyeClosedSvg;
+        };
+        document.getElementById('slipPassCopyBtn').onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(finalPassword);
+            const txt = document.getElementById('slipPassCopyText');
+            txt.textContent = dict.copiedBtn;
+            setTimeout(() => { txt.textContent = dict.copyBtn; }, 1600);
+          } catch (_) {}
+        };
+
+        const waText = encodeURIComponent(
+          `*STAR SHOP*\n\n` +
+          `${ownerName} - ${shopName}\n` +
+          `Phone: ${phone}\n` +
+          `Star Shop ID: ${finalStarId}\n` +
+          `Password: ${finalPassword}\n` +
+          `Timing: ${timingText}\n` +
+          `Location: https://www.google.com/maps?q=${shopLat},${shopLng}`
+        );
+        document.getElementById('whatsappBtn').href = `https://wa.me/91${phone}?text=${waText}`;
+
+        document.getElementById('starShopForm').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        speakText(dict.succTitle);
+
+      } catch (err) {
+        showError(err.message || dict.errGeneric);
+        speakText(err.message || dict.errGeneric);
+        btn.disabled = false;
+        btnText.textContent = dict.submitBtn;
+      }
+    });
+  </script>
 </body>
 </html>
